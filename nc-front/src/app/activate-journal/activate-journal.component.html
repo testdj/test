@@ -10,9 +10,9 @@
                             
                               <label for={{field.id}}>{{field.label}}</label>
                              
+                              <input type="number" name={{field.id}} [(ngModel)]="field.value.value"  *ngIf="field.type.name=='long'" class="form-control" id="{{field.id}}">
                                 <input type="text" name={{field.id}} [(ngModel)]="field.value.value"  *ngIf="field.type.name=='string'" class="form-control" id="{{field.id}}">
                                 <input type="checkbox" name={{field.id}} [(ngModel)]="field.value.value"  *ngIf="field.type.name=='boolean'" class="form-control" id="{{field.id}}">
-                                <input type="number" name={{field.id}} [(ngModel)]="field.value.value"  *ngIf="field.type.name=='long'" class="form-control" id="{{field.id}}">
                                 <select name="{{field.id}}" [(ngModel)]="field.value.value" *ngIf="field.type.name=='enum'" class="form-control" id="{{field.id}}">
                                   <option *ngFor="let val of enumValues" value={{val}}>
                                     {{field.type.values[val]}}
@@ -20,14 +20,14 @@
                                 </select>
                                 <ng-multiselect-dropdown
                                   [placeholder]="Izaberi"
-                                  [data]="multiselectList[field.id]"
-                                  [(ngModel)]="selectedItems[field.id]"
                                   [settings]="dropdownSettings"
+                                  [data]="multiselectList[field.id]"
                                   (onSelect)="onItemSelect($event)"
-                                  (onSelectAll)="onSelectAll($event)"
                                   *ngIf="field.type.name.includes('multi-select')"
-                                  name={{field.id}}
+                                  (onSelectAll)="onSelectAll($event)"
+                                  [(ngModel)]="selectedItems[field.id]"
                                   id="{{field.id}}"
+                                  name={{field.id}}
                                 >
                                 </ng-multiselect-dropdown>
                               

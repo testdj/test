@@ -1,17 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { RegistrationService } from '../_services/registration/registration.service';
 import { BpmnService } from '../_services/bpmn/bpmn.service';
+import { RegistrationService } from '../_services/registration/registration.service';
 
 @Component({
-  selector: 'app-admin-registrations',
   templateUrl: './admin-registrations.component.html',
+  selector: 'app-admin-registrations',
   styleUrls: ['./admin-registrations.component.scss']
 })
 export class AdminRegistrationsComponent implements OnInit {
 
   private users;
-
-
   constructor(private registrationService : RegistrationService, private bpmnService : BpmnService) { }
 
   ngOnInit() {

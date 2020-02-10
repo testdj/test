@@ -1,19 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { ScienceJournalService } from '../_services/science-journal/science-journal.service';
 import { BpmnService } from '../_services/bpmn/bpmn.service';
+import { Component, OnInit } from '@angular/core';
 import { NotifierService } from "angular-notifier";
+import { ScienceJournalService } from '../_services/science-journal/science-journal.service';
 
 
 
 @Component({
-  selector: 'app-admin-journals',
   templateUrl: './admin-journals.component.html',
+  selector: 'app-admin-journals',
   styleUrls: ['./admin-journals.component.scss']
 })
 export class AdminJournalsComponent implements OnInit {
 
 	private casopisi;
-
   constructor(private scienceJournalService : ScienceJournalService, private bpmnService : BpmnService, private notifierService: NotifierService) { }
 
   ngOnInit() {
@@ -36,8 +35,8 @@ export class AdminJournalsComponent implements OnInit {
           this.ngOnInit();
         },
         err => {
-          console.log(err);
           alert("Error Occured!");
+          console.log(err);
         }
       );
   }

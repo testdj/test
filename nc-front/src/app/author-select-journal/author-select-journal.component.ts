@@ -1,24 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { PaperServiceService } from '../_services/paper/paper-service.service';
-import { BpmnService } from '../_services/bpmn/bpmn.service';
-import { NotifierService } from 'angular-notifier';
 import { Router } from '@angular/router';
+import { PaperServiceService } from '../_services/paper/paper-service.service';
+import { NotifierService } from 'angular-notifier';
+import { BpmnService } from '../_services/bpmn/bpmn.service';
 
 @Component({
-  selector: 'app-author-select-journal',
   templateUrl: './author-select-journal.component.html',
+  selector: 'app-author-select-journal',
   styleUrls: ['./author-select-journal.component.scss']
 })
 export class AuthorSelectJournalComponent implements OnInit {
 
+  private propertyType={};
   private formFieldsDto = null;
+  private selectedItems={};
+  private dropdownSettings={};
   private formFields = [];
   private processInstanceID = "";
-  private enumValues = [];
   private multiselectList={};
-  private selectedItems={};
-  private propertyType={};
-  private dropdownSettings={};
+  private enumValues = [];
 
   constructor(private paperService : PaperServiceService, private bpmnService : BpmnService, private notifierService : NotifierService, private router : Router) {  }
 
@@ -26,9 +26,9 @@ export class AuthorSelectJournalComponent implements OnInit {
     this.paperService.getCasopisiAndStartProcess().subscribe(
         res => {
           this.formFieldsDto = res;
-               this.formFields = res.formFields;
                console.log(res);
                this.processInstanceID = res.processInstanceId;
+               this.formFields = res.formFields;
                this.formFields.forEach( (field) => {
                  this.propertyType[field.id]=field.type.name;
                  if( field.type.name=='enum'){
@@ -50,8 +50,8 @@ export class AuthorSelectJournalComponent implements OnInit {
 
     x.subscribe(
       res => {
-        this.notifierService.notify("success","Bravo!");
         this.router.navigate(['input/paper/'+this.processInstanceID])
+        this.notifierService.notify("success","Uspesno ste odabrali casopis!");
       },
       err => {
               console.log(err);
@@ -60,8 +60,8 @@ export class AuthorSelectJournalComponent implements OnInit {
               map.delete("taskID");
               for(let key of Array.from( map.keys()) ) {
                let field=this.formFields.find(field => field.id==key);  
-               field.err=true;
                field.errMsg=map.get(key);
+               field.err=true;
         }
       }
     );

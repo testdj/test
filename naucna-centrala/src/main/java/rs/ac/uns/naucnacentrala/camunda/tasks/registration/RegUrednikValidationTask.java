@@ -1,5 +1,5 @@
 package rs.ac.uns.naucnacentrala.camunda.tasks.registration;
-
+/*
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,3 +60,4 @@ public class RegUrednikValidationTask implements JavaDelegate {
     }
 
 }
+*/

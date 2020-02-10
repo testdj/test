@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { User } from '../../_model/user';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 
 
@@ -11,8 +11,8 @@ export class AuthenticationService {
 
     private LOGIN_URL = "http://localhost:8080/restapi/auth/login"
 
-    private currentUserSubject: BehaviorSubject<User>;
     public currentUser: Observable<User>;
+    private currentUserSubject: BehaviorSubject<User>;
 
     constructor(private http: HttpClient) {
         this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
@@ -23,6 +23,11 @@ export class AuthenticationService {
         return this.currentUserSubject.value;
     }
 
+    logout() {
+        // remove user from local storage to log user out
+        localStorage.removeItem('currentUser');
+        this.currentUserSubject.next(null);
+    }
     login(username: string, password: string) {
         return this.http.post<any>(this.LOGIN_URL, { username, password })
             .pipe(map(user => {
@@ -38,9 +43,4 @@ export class AuthenticationService {
             }));
     }
 
-    logout() {
-        // remove user from local storage to log user out
-        localStorage.removeItem('currentUser');
-        this.currentUserSubject.next(null);
-    }
 }

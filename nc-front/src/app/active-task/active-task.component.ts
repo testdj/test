@@ -1,55 +1,52 @@
 import { Component, OnInit } from '@angular/core';
+import { PaperServiceService } from '../_services/paper/paper-service.service';
 import { ScienceJournalService } from '../_services/science-journal/science-journal.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BpmnService } from '../_services/bpmn/bpmn.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { PaperServiceService } from '../_services/paper/paper-service.service';
 
 @Component({
-  selector: 'app-active-task',
   templateUrl: '../_common/generic-form.html',
+  selector: 'app-active-task',
   styleUrls: ['./active-task.component.scss']
 })
 export class ActiveTaskComponent implements OnInit {
 
   constructor(private paperService : PaperServiceService, private modalService : NgbModal, private scienceJournalService : ScienceJournalService, private bpmnService : BpmnService, private router : Router, private route : ActivatedRoute) { }
 
-  private formFieldsDto = null;
   private formFields = [];
+  private formFieldsDto = null;
+  private multiselectList={};
   private processInstanceID = "";
   private enumValues = [];
-  private multiselectList={};
-  private selectedItems={};
   private propertyType={};
+  private selectedItems={};
+  private taskId;
   private dropdownSettings={};
   private src;
-  private taskId;
 
   ngOnInit() {
 
     this.dropdownSettings = {
-      singleSelection: false,
+      unSelectAllText: 'UnSelect All',
       idField: 'item_id',
       textField: 'item_text',
+      singleSelection: false,
       selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 5,
-      allowSearchFilter: true
+      allowSearchFilter: true,
+      itemsShowLimit: 5
     };
 
     this.taskId=this.route.snapshot.paramMap.get('taskID');
 
     this.bpmnService.getTask(this.taskId).subscribe(
-      res => {
-             
-                this.formFieldsDto = res;
+      res => {      
                 this.formFields = res.formFields;
-                console.log(res);
+                this.formFieldsDto = res;
                 this.processInstanceID = res.processInstanceId;
+                console.log(res);
                 this.formFields.forEach( (field) => {
-                  
                   this.propertyType[field.id]=field.type.name;
-
                   if(field.properties['type']=='file' && this.isReadonly(field.validationConstraints)){
                     this.paperService.getCasopisPdf(field.value.value).subscribe(
                       res => {
@@ -65,14 +62,14 @@ export class ActiveTaskComponent implements OnInit {
                     this.enumValues = Object.keys(field.type.values);
                   }
                   if(field.type.name.includes('multi-select')){
-                    this.selectedItems[field.id]=[];
                     this.multiselectList[field.id]=[];
+                    this.selectedItems[field.id]=[];
                     let map=new Map(Object.entries(field.type.values));
                     //let values = Object.values(field.type.values);
                     for(let key of Array.from(map.keys())){
                       var item={item_id:"",item_text:""};
-                      item.item_id=key;
                       item.item_text=map.get(key);
+                      item.item_id=key;
                       console.log(item);
                       this.multiselectList[field.id].push(item);
                       let selVals=field.value.value;
@@ -92,23 +89,6 @@ export class ActiveTaskComponent implements OnInit {
               });
   }
 
-  onItemSelect(item: any) {
-  }
-  onSelectAll(items: any) {
-  }
-
-
-  openChild(content,fieldID) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
-      console.log(result);
-      let field = this.formFields.find(field => field.id==fieldID);
-      field.value.value=[];
-      field.value.value.push(result); 
-    }, (reason) => {
-      console.log(reason);
-    });
-  }
-
   openPdf(content) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title',windowClass : "myCustomModalClass"}).result.then((result) => {
 
@@ -116,14 +96,19 @@ export class ActiveTaskComponent implements OnInit {
 
     });
   }
+  
+  onSelectAll(items: any) {
+  }
+  onItemSelect(item: any) {
+  }
 
   onSubmit(value, form){
     console.log(this.propertyType);
     let o = new Array();
     for (var property in value) {
       let fieldReset=this.formFields.find(field => field.id==property);
-      fieldReset.err=false;
       fieldReset.errMsg=null;
+      fieldReset.err=false;
       if(!this.isReadonly(fieldReset.validationConstraints)){
         if(this.propertyType[property].includes('multi-select')){
           let arr = [];
@@ -149,13 +134,13 @@ export class ActiveTaskComponent implements OnInit {
       },
       err => {
         console.log(err);
-        this.formFieldsDto.taskId=err.error["taskID"];
         let map=new Map(Object.entries(err.error));
+        this.formFieldsDto.taskId=err.error["taskID"];
         map.delete("taskID");
         for(let key of Array.from( map.keys()) ) {
           let field=this.formFields.find(field => field.id==key);  
-          field.err=true;
           field.errMsg=map.get(key);
+          field.err=true;
         }
       }
       );
@@ -172,6 +157,17 @@ isReadonly(constraints){
   }else{
     return false;
   }
+}
+
+openChild(content,fieldID) {
+  this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+    console.log(result);
+    let field = this.formFields.find(field => field.id==fieldID);
+    field.value.value=[];
+    field.value.value.push(result); 
+  }, (reason) => {
+    console.log(reason);
+  });
 }
 
 }

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { PaperServiceService } from '../_services/paper/paper-service.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { PaperServiceService } from '../_services/paper/paper-service.service';
 
 @Component({
-  selector: 'app-show-pdf',
   templateUrl: './show-pdf.component.html',
+  selector: 'app-show-pdf',
   styleUrls: ['./show-pdf.component.scss']
 })
 export class ShowPdfComponent implements OnInit {
@@ -16,8 +16,8 @@ export class ShowPdfComponent implements OnInit {
   ngOnInit() {
       this.paperService.getCasopisPdf("proba.pdf").subscribe(
           res => {
-            console.log(res);
             this.src=res;
+            console.log(res);
           },
           err => {
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 const BASE_CONTROLLER_URL = "http://localhost:8080/restapi/bpmn"
 
@@ -12,28 +12,28 @@ export class BpmnService {
   constructor(private http: HttpClient) { }
 
 
-  postFormData(taskID,formData): Observable<any>{
-    return this.http.post(`${BASE_CONTROLLER_URL}/form/`+taskID,formData);
-  }
-
   postProtectedFormData(taskID,formData): Observable<any>{
     return this.http.post(`${BASE_CONTROLLER_URL}/protected/form/`+taskID,formData);
   }
-
-  getActiveTaskForm(processInstanceId): Observable<any>{
-    return this.http.get(`${BASE_CONTROLLER_URL}/task/active/`+processInstanceId);
-  }
- 
-  getNonActivatedJournals(): Observable<any>{
-    return this.http.get(`${BASE_CONTROLLER_URL}/admin/journal`);
+  
+  postFormData(taskID,formData): Observable<any>{
+    return this.http.post(`${BASE_CONTROLLER_URL}/form/`+taskID,formData);
   }
 
   getTask(id): Observable<any>{
     return this.http.get(`${BASE_CONTROLLER_URL}/tasks/`+id);
   }
-
+  
+  getActiveTaskForm(processInstanceId): Observable<any>{
+    return this.http.get(`${BASE_CONTROLLER_URL}/task/active/`+processInstanceId);
+  }
+ 
   getMyTasks(): Observable<any>{
     return this.http.get(`${BASE_CONTROLLER_URL}/tasks`);
+  }
+  
+  getNonActivatedJournals(): Observable<any>{
+    return this.http.get(`${BASE_CONTROLLER_URL}/admin/journal`);
   }
 
 }

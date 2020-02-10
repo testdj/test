@@ -1,24 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
-import { AuthenticationService } from '../_services/authentication/authentication.service';
-import { first } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
+import { FormGroup, FormControl } from '@angular/forms';
+import { first } from 'rxjs/operators';
+import { AuthenticationService } from '../_services/authentication/authentication.service';
 
 @Component({
-  selector: 'app-login',
   templateUrl: './login.component.html',
+  selector: 'app-login',
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
 
   loading = false;
-  submitted = false;
   returnUrl: string;
+  submitted = false;
   error = '';
 
 	loginForm = new FormGroup({
+    password: new FormControl(''),
     	username: new FormControl(''),
-      password: new FormControl(''),
   	});
 
   constructor(private authenticationService : AuthenticationService,private router: Router, private route: ActivatedRoute) { }
@@ -47,8 +47,8 @@ export class LoginComponent implements OnInit {
               },
               err => {
                 console.log(err);
+                this.loading = false;
                   this.error = err.error;
-                  this.loading = false;
               });
   }
 

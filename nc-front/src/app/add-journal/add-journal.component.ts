@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { ScienceJournalService } from '../_services/science-journal/science-journal.service';
-import { BpmnService } from '../_services/bpmn/bpmn.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { BpmnService } from '../_services/bpmn/bpmn.service';
+import { ScienceJournalService } from '../_services/science-journal/science-journal.service';
 
 
 @Component({
-  selector: 'app-add-journal',
   templateUrl: './add-journal.component.html',
+  selector: 'app-add-journal',
   styleUrls: ['./add-journal.component.scss']
 })
 export class AddJournalComponent implements OnInit {
@@ -14,18 +14,18 @@ export class AddJournalComponent implements OnInit {
   constructor(private scienceJournalService : ScienceJournalService, private bpmnService : BpmnService, private router : Router) { }
 
   private formFieldsDto = null;
-  private formFields = [];
-  private processInstanceID = "";
-  private enumValues = [];
   private multiSelectValues;
+  private formFields = [];
+  private enumValues = [];
+  private processInstanceID = "";
 
   ngOnInit() {
     	this.scienceJournalService.getNewJournalForm().subscribe(
     		res => {
+          this.formFields = res.formFields;
                this.formFieldsDto = res;
-               this.formFields = res.formFields;
-               console.log(res);
                this.processInstanceID = res.processInstanceId;
+               console.log(res);
                this.formFields.forEach( (field) => {
                  if( field.type.name=='enum'){
                    this.enumValues = Object.keys(field.type.values);
@@ -33,8 +33,8 @@ export class AddJournalComponent implements OnInit {
                })
             },
         err => {
+          alert("An error has occured!");
               console.log(err);
-              alert("An error has occured!");
             });
   }
 
@@ -49,8 +49,8 @@ export class AddJournalComponent implements OnInit {
       o.push({fieldId : property, fieldValue : value[property]});
     }
 
-    console.log(o);
     let x = this.bpmnService.postProtectedFormData(this.formFieldsDto.taskId,o);
+    console.log(o);
 
     x.subscribe(
       res => {
@@ -64,15 +64,15 @@ export class AddJournalComponent implements OnInit {
               for(let key of Array.from( map.keys()) ) {
                  if(key=="unique"){
                   alert("Username or email are not unique!");
-                  let fieldUsername=this.formFields.find(field => field.id=="username");
                   let fieldEmail=this.formFields.find(field => field.id=="email");
-                  fieldUsername.err=true;
+                  let fieldUsername=this.formFields.find(field => field.id=="username");
                   fieldEmail.err=true;
+                  fieldUsername.err=true;
                   break;
                 }
                let field=this.formFields.find(field => field.id==key);  
-               field.err=true;
                field.errMsg=map[key];
+               field.err=true;
         }
       }
     );
