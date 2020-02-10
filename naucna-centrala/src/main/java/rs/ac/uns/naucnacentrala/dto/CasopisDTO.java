@@ -35,7 +35,6 @@ public class CasopisDTO {
     private Boolean enabled;
 
     private String processInstanceId;
-
     private String taskId;
 
     private CasopisStatus casopisStatus = CasopisStatus.WAITING_FOR_INPUT;
