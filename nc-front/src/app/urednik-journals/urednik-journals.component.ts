@@ -11,7 +11,10 @@ import { Component, OnInit } from '@angular/core';
 export class UrednikJournalsComponent implements OnInit {
 
   private casopisi;
-  constructor(private scienceJournalService : ScienceJournalService, private bpmnService : BpmnService, private router : Router) { }
+  constructor(
+    private scienceJournalService : ScienceJournalService, 
+    private bpmnService : BpmnService, 
+    private router : Router) { }
 
   ngOnInit() {
     this.scienceJournalService.getMineJournals().subscribe(

@@ -3,16 +3,16 @@
         <div class="container">
             <div class="row text-blue">
                 <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
-                    <h1 class="display-4 py-2 text-truncate">Task</h1>
+                    <h1 class="display-4 py-2 text-truncate">Zadatak</h1>
                     <div class="px-2">
                         <form #f="ngForm" (ngSubmit)="onSubmit(f.value, f)" ngNativeValidate>
                           <div *ngFor="let field of formFields"  class="form-group">
                             
                               <label for={{field.id}}>{{field.label}}</label>
                              
+                              <input type="number" name={{field.id}} [(ngModel)]="field.value.value"  *ngIf="field.type.name=='long'" class="form-control" id="{{field.id}}" [readonly]="isReadonly(field.validationConstraints)">
                                 <input type="text" name={{field.id}} [(ngModel)]="field.value.value"  *ngIf="field.type.name=='string' && (field.properties | json) == '{}'" class="form-control" id="{{field.id}}" [readonly]="isReadonly(field.validationConstraints)">
                                 <input type="checkbox" name={{field.id}} [(ngModel)]="field.value.value"  *ngIf="field.type.name=='boolean'" class="form-control" id="{{field.id}}" [readonly]="isReadonly(field.validationConstraints)">
-                                <input type="number" name={{field.id}} [(ngModel)]="field.value.value"  *ngIf="field.type.name=='long'" class="form-control" id="{{field.id}}" [readonly]="isReadonly(field.validationConstraints)">
                                 <select name="{{field.id}}" [(ngModel)]="field.value.value" *ngIf="field.type.name=='enum'" class="form-control" id="{{field.id}}">
                                   <option *ngFor="let val of enumValues" value={{val}}>
                                     {{field.type.values[val]}}
@@ -21,12 +21,12 @@
                                 
                                 
                                 <ng-multiselect-dropdown
-                                  [placeholder]="Izaberi"
+                                [(ngModel)]="selectedItems[field.id]"
+                                [placeholder]="Izaberi"
                                   [data]="multiselectList[field.id]"
-                                  [(ngModel)]="selectedItems[field.id]"
+                                  (onSelectAll)="onSelectAll($event)"
                                   [settings]="dropdownSettings"
                                   (onSelect)="onItemSelect($event)"
-                                  (onSelectAll)="onSelectAll($event)"
                                   *ngIf="field.type.name.includes('multi-select')"
                                   name={{field.id}}
                                 >
@@ -46,9 +46,9 @@
                                         <div *ngIf="prop.key!='type'">
                                           <label for={{prop.key}}>{{prop.key}}</label>
                                          
+                                          <input type="number" name={{prop.key}} [(ngModel)]="child[prop.key]"  *ngIf="prop.value=='long'" class="form-control" id="{{prop.key}}">
                                             <input type="text" name={{prop.key}} [(ngModel)]="child[prop.key]"  *ngIf="prop.value=='string'" class="form-control" id="{{prop.key}}">
                                             <input type="checkbox" name={{prop.key}} [(ngModel)]="child[prop.key]"  *ngIf="prop.value=='boolean'" class="form-control" id="{{prop.key}}">
-                                            <input type="number" name={{prop.key}} [(ngModel)]="child[prop.key]"  *ngIf="prop.value=='long'" class="form-control" id="{{prop.key}}">
                                         </div>
                                       </div>
                                     </form>
@@ -58,14 +58,11 @@
                                   </div>
                                 </ng-template>
 
-                                <button type="button" class="btn btn-outline-primary" (click)="openChild(contentChild,field.id)" *ngIf="field.properties['type']=='json'">Add</button>
-                                <input type="text" name={{field.id}} [(ngModel)]="field.value.value"  *ngIf="field.properties['type']=='json'" class="form-control" id="{{field.id}}" hidden="true">
-
-                                
-
                                 <input ng2FileSelect type="file" accept=".pdf" [uploader]="uploader" *ngIf="field.type.name=='string' && field.properties['type']=='file' && !isReadonly(field.validationConstraints)"  (change)="fileSelectionChanged(field)"/>
                                 <input type="text" name={{field.id}} [(ngModel)]="field.value.value"   *ngIf="field.type.name=='string' && field.properties['type']=='file' && !isReadonly(field.validationConstraints)" class="form-control" id="{{field.id}}" hidden="true">
 
+                                <button type="button" class="btn btn-outline-primary" (click)="openChild(contentChild,field.id)" *ngIf="field.properties['type']=='json'">Add</button>
+                                <input type="text" name={{field.id}} [(ngModel)]="field.value.value"  *ngIf="field.properties['type']=='json'" class="form-control" id="{{field.id}}" hidden="true">
 
                                 <ng-template #contentPdf let-modal>
                                   <div class="modal-header">

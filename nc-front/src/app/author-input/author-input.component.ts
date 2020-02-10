@@ -30,7 +30,10 @@ export class AuthorInputComponent implements OnInit {
 
   ngOnInit() {
 
-    this.uploader= new FileUploader({ url: "http://localhost:8080/restapi/paper", removeAfterUpload: false, authToken: "Bearer " + this.authService.currentUserValue.token});
+    this.uploader= new FileUploader({ 
+      url: "http://localhost:8080/restapi/paper", 
+      removeAfterUpload: false, 
+      authToken: "Bearer " + this.authService.currentUserValue.token});
 
     this.dropdownSettings = {
       singleSelection: false,
@@ -126,7 +129,7 @@ export class AuthorInputComponent implements OnInit {
 
       x.subscribe(
         res => {
-          this.notifierService.notify("success","Bravo Nikso!");
+          this.notifierService.notify("success","Uspesno poslat rad!");
           this.router.navigate(['pdf']);
         },
         err => {

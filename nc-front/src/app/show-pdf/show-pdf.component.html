@@ -14,4 +14,20 @@
     <button type="button" class="btn btn-outline-dark" (click)="modal.close('uspeh')">Zatvori</button>
   </div>
 </ng-template>
-<button type="button" class="btn btn-outline-primary" (click)="open(content)">Prikazi PDF</button>
+<div class="container">
+  <div class="row mt-5">
+    <h2 class="text-primary">Proverite ispravnost PDF-a koji ste izabrali.</h2>
+  </div>
+  <div class="row ml-auto mr-auto">
+<div class="card bg-dark text-light" style="height: 12rem;width: 16rem;">
+  <div class="card-body">
+    <h3 class="card-title">Izabrani PDF:</h3>
+    <table class="table text-light">
+      <tr>
+        <button type="button" class="btn btn-outline-primary" (click)="open(content)">Prikazi PDF</button>     
+       </tr>
+    </table>
+  </div>
+</div>
+</div>
+</div>

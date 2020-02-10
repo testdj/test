@@ -11,7 +11,9 @@ export class UserTasksComponent implements OnInit {
 
   private tasks;
 
-  constructor(private bpmnService : BpmnService, private router : Router) { }
+  constructor(
+    private bpmnService : BpmnService, 
+    private router : Router) { }
 
   ngOnInit() {
     this.bpmnService.getMyTasks().subscribe(

@@ -16,7 +16,12 @@ import { ScienceJournalService } from '../_services/science-journal/science-jour
 export class RegistrationComponent implements OnInit {
 
 
-   constructor(private registrationService : RegistrationService, private bpmnService : BpmnService, private router : Router, private route : ActivatedRoute, private notifierService : NotifierService) { }
+   constructor(
+     private registrationService : RegistrationService, 
+     private bpmnService : BpmnService, 
+     private router : Router, 
+     private route : ActivatedRoute, 
+     private notifierService : NotifierService) { }
 
    private formFields = [];
   private formFieldsDto = null;

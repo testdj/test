@@ -21,7 +21,9 @@ export class LoginComponent implements OnInit {
     	username: new FormControl(''),
   	});
 
-  constructor(private authenticationService : AuthenticationService,private router: Router, private route: ActivatedRoute) { }
+  constructor(
+    private authenticationService : AuthenticationService,
+    private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.authenticationService.logout();

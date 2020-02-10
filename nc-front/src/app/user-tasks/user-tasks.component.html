@@ -1,12 +1,24 @@
-<div *ngFor="let task of tasks">
-  <div class="card text-center" style="width: 21.5em;margin:0 auto;">
-    <div class="card-header">
-      Task
-    </div>
-    <div class="card-body">
-      <h5 class="card-title">{{task.name}}</h5>
-      <p class="card-text">Scientific paper: {{task.rad}}</p>
-      <button  class="btn btn-primary" (click)="onClick(task.taskId)">Complete</button>
+<div class="container">
+  <div class="row mt-5">
+    <h2 class="text-primary" *ngIf="tasks==0">Trenutno nema aktivnih zadataka.</h2>
+    <h2 class="text-primary mb-5" *ngIf="tasks!=0">Moji zadaci:</h2>
+  </div>
+  <div class="row ml-auto mr-auto">
+    <div class="col col-md-3 mb-5 mr-5" *ngFor="let task of tasks">
+      <div class="card bg-dark text-light" style="height: 14rem;width: 20rem;">
+        <div class="card-body">
+          <h3 class="card-title">{{task.name}}</h3>
+          <table class="table text-light">
+            <tr>
+              <td>Naucni rad: </td>
+              <td>{{task.rad}}</td>
+            </tr>
+            <tr>
+              <button  class="btn btn-primary" (click)="onClick(task.taskId)">Complete</button>
+            </tr>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </div>

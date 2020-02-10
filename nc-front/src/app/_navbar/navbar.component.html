@@ -1,12 +1,11 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
-      <a class="navbar-brand clicker" routerLink="register" *ngIf="!(currentUser$ | async)">Register</a> 
-      <a class="navbar-brand clicker" routerLink="login" *ngIf="!(currentUser$ | async)">Login</a>
-      <a class="navbar-brand clicker" (click)="newJournal()" *ngIf="(currentUser$ | async)?.role=='ROLE_UREDNIK'">Add New Journal</a>
-      <a class="navbar-brand clicker" routerLink="admin/journals" *ngIf="(currentUser$ | async)?.role=='ROLE_ADMIN'">Activate Journals</a>
-      <a class="navbar-brand clicker" routerLink="admin/users" *ngIf="(currentUser$ | async)?.role=='ROLE_ADMIN'">Activate Reviewers</a>
-      <a class="navbar-brand clicker" routerLink="urednik/journals" *ngIf="(currentUser$ | async)?.role=='ROLE_UREDNIK'">My Journals</a>
-      <a class="navbar-brand clicker" routerLink="admin/register/urednik" *ngIf="(currentUser$ | async)?.role=='ROLE_ADMIN'">Register New Editors</a>
-      <a class="navbar-brand clicker" routerLink="author/select/journal" *ngIf="(currentUser$ | async)?.role=='ROLE_AUTHORS'">Add paper to journal</a>
-      <a class="navbar-brand clicker" routerLink="tasks" *ngIf="(currentUser$ | async)">Tasks</a>
-      <a class="navbar-brand clicker" (click)="logout()" *ngIf="(currentUser$ | async)">Logout</a>
-</nav>
+
+      <button class="btn btn-outline-success mt-3 ml-5" routerLink="register" *ngIf="!(currentUser$ | async)">Register</button>
+      <button class="btn btn-outline-success mt-3 ml-5" routerLink="login" *ngIf="!(currentUser$ | async)">Login</button>
+      <button class="btn btn-outline-success mt-3 ml-5" (click)="newJournal()" *ngIf="(currentUser$ | async)?.role=='ROLE_UREDNIK'">Add New Journal</button>
+      <button class="btn btn-outline-success mt-3 ml-5" routerLink="admin/journals" *ngIf="(currentUser$ | async)?.role=='ROLE_ADMIN'">Activate Journals</button>
+      <button class="btn btn-outline-success mt-3 ml-5" routerLink="admin/users" *ngIf="(currentUser$ | async)?.role=='ROLE_ADMIN'">Activate Reviewers</button>
+      <button class="btn btn-outline-success mt-3 ml-5" routerLink="urednik/journals" *ngIf="(currentUser$ | async)?.role=='ROLE_UREDNIK'">My Journals</button>
+      <button class="btn btn-outline-success mt-3 ml-5" routerLink="admin/register/urednik" *ngIf="(currentUser$ | async)?.role=='ROLE_ADMIN'">Register New Editors</button>
+      <button class="btn btn-outline-success mt-3 ml-5" routerLink="author/select/journal" *ngIf="(currentUser$ | async)?.role=='ROLE_AUTHORS'">Add paper to journal</button>
+      <button class="btn btn-outline-success mt-3 ml-5" routerLink="tasks" *ngIf="(currentUser$ | async)">Tasks</button>
+      <button class="btn btn-outline-success mt-3 ml-5" (click)="logout()" *ngIf="(currentUser$ | async)">Logout</button>

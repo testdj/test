@@ -12,7 +12,13 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class ActiveTaskComponent implements OnInit {
 
-  constructor(private paperService : PaperServiceService, private modalService : NgbModal, private scienceJournalService : ScienceJournalService, private bpmnService : BpmnService, private router : Router, private route : ActivatedRoute) { }
+  constructor(
+    private paperService : PaperServiceService, 
+    private modalService : NgbModal, 
+    private scienceJournalService : ScienceJournalService, 
+    private bpmnService : BpmnService, 
+    private router : Router, 
+    private route : ActivatedRoute) { }
 
   private formFields = [];
   private formFieldsDto = null;
