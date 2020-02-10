@@ -6,20 +6,16 @@ import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.value.ObjectValue;
 import org.camunda.bpm.engine.variable.value.StringValue;
-import org.camunda.bpm.engine.variable.value.TypedValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import rs.ac.uns.naucnacentrala.dto.CasopisDTO;
 import rs.ac.uns.naucnacentrala.dto.NaucnaOblastDTO;
 import rs.ac.uns.naucnacentrala.dto.UserDTO;
-import rs.ac.uns.naucnacentrala.model.Authority;
-import rs.ac.uns.naucnacentrala.model.Casopis;
 import rs.ac.uns.naucnacentrala.model.NaucnaOblast;
 import rs.ac.uns.naucnacentrala.model.User;
 import rs.ac.uns.naucnacentrala.repository.AuthorityRepository;
 import rs.ac.uns.naucnacentrala.repository.NaucnaOblastRepository;
 import rs.ac.uns.naucnacentrala.repository.UserRepository;
-import rs.ac.uns.naucnacentrala.utils.ObjectMapperUtils;
+import rs.ac.uns.naucnacentrala.utils.ObjectMapper;
 
 import java.util.*;
 
@@ -70,7 +66,7 @@ public class RegistrationServiceImpl implements RegistrationService{
         ObjectValue naucneOblastiValue=map.getValueTyped("naucne_oblasti");
         for(String id : (List<String>) naucneOblastiValue.getValue()){
             NaucnaOblast no=naucnaOblastRepository.getOne(Long.valueOf(id));
-            NaucnaOblastDTO noDTO= ObjectMapperUtils.map(no,NaucnaOblastDTO.class);
+            NaucnaOblastDTO noDTO= ObjectMapper.map(no,NaucnaOblastDTO.class);
             user.getNaucneOblasti().add(noDTO);
         }
         return user;
@@ -84,7 +80,7 @@ public class RegistrationServiceImpl implements RegistrationService{
         for(Task task : taskList){
             User user=userRepository.findByUsername(runtimeService.getVariable(task.getProcessInstanceId(),"username").toString());
             if(user!=null) {
-                UserDTO userDTO = ObjectMapperUtils.map(user,UserDTO.class);
+                UserDTO userDTO = ObjectMapper.map(user,UserDTO.class);
                 userDTO.setTaskId(task.getId());
                 users.add(userDTO);
             }

@@ -16,11 +16,10 @@ import rs.ac.uns.naucnacentrala.dto.NaucnaOblastDTO;
 import rs.ac.uns.naucnacentrala.model.Casopis;
 import rs.ac.uns.naucnacentrala.model.NacinPlacanja;
 import rs.ac.uns.naucnacentrala.model.NaucnaOblast;
-import rs.ac.uns.naucnacentrala.model.User;
 import rs.ac.uns.naucnacentrala.repository.CasopisRepository;
 import rs.ac.uns.naucnacentrala.repository.NacinPlacanjaRepository;
 import rs.ac.uns.naucnacentrala.repository.NaucnaOblastRepository;
-import rs.ac.uns.naucnacentrala.utils.ObjectMapperUtils;
+import rs.ac.uns.naucnacentrala.utils.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,13 +62,13 @@ public class JournalServiceImpl implements JournalService{
         ObjectValue nacinPlacanjaValue=map.getValueTyped("nacin_placanja");
         for(String id : (List<String>) nacinPlacanjaValue.getValue()){
             NacinPlacanja np=nacinPlacanjaRepository.getOne(Long.valueOf(id));
-            NacinPlacanjaDTO npDTO= ObjectMapperUtils.map(np,NacinPlacanjaDTO.class);
+            NacinPlacanjaDTO npDTO= ObjectMapper.map(np,NacinPlacanjaDTO.class);
             casopis.getNaciniPlacanja().add(npDTO);
         }
         ObjectValue naucneOblastiValue=map.getValueTyped("naucne_oblasti");
         for(String id : (List<String>) naucneOblastiValue.getValue()){
             NaucnaOblast no=naucnaOblastRepository.getOne(Long.valueOf(id));
-            NaucnaOblastDTO noDTO= ObjectMapperUtils.map(no,NaucnaOblastDTO.class);
+            NaucnaOblastDTO noDTO= ObjectMapper.map(no,NaucnaOblastDTO.class);
             casopis.getNaucneOblasti().add(noDTO);
         }
 
@@ -84,7 +83,7 @@ public class JournalServiceImpl implements JournalService{
         for(Task task : taskList){
             Casopis casopis=casopisRepository.findByProcessInstanceId(task.getProcessInstanceId());
             if(casopis!=null) {
-                CasopisDTO casopisDTO = ObjectMapperUtils.map(casopis, CasopisDTO.class);
+                CasopisDTO casopisDTO = ObjectMapper.map(casopis, CasopisDTO.class);
                 casopisDTO.setTaskId(task.getId());
                 casopisi.add(casopisDTO);
             }

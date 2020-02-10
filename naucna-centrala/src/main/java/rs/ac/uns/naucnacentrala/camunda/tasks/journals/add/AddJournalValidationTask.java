@@ -2,8 +2,6 @@ package rs.ac.uns.naucnacentrala.camunda.tasks.journals.add;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.camunda.bpm.engine.variable.value.ObjectValue;
-import org.camunda.bpm.engine.variable.value.TypedValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -12,8 +10,8 @@ import rs.ac.uns.naucnacentrala.dto.CasopisDTO;
 import rs.ac.uns.naucnacentrala.model.*;
 import rs.ac.uns.naucnacentrala.repository.CasopisRepository;
 import rs.ac.uns.naucnacentrala.repository.UserRepository;
-import rs.ac.uns.naucnacentrala.service.CasopisService;
-import rs.ac.uns.naucnacentrala.utils.ObjectMapperUtils;
+import rs.ac.uns.naucnacentrala.service.MagazinService;
+import rs.ac.uns.naucnacentrala.utils.ObjectMapper;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -35,7 +33,7 @@ public class AddJournalValidationTask implements JavaDelegate {
     CasopisRepository casopisRepository;
 
     @Autowired
-    CasopisService casopisService;
+    MagazinService magazinService;
 
     @Override
     public void execute(DelegateExecution execution) throws Exception {
@@ -60,7 +58,7 @@ public class AddJournalValidationTask implements JavaDelegate {
                 execution.setVariable("validationErrors", valErrors);
                 flag_val = false;
             }else {
-                Casopis realCasopis= ObjectMapperUtils.map(casopis,Casopis.class);
+                Casopis realCasopis= ObjectMapper.map(casopis,Casopis.class);
                 execution.setVariable("validationErrors", null);
                 realCasopis.setProcessInstanceId(execution.getProcessInstanceId());
                 if(maybe!=null){
@@ -69,7 +67,7 @@ public class AddJournalValidationTask implements JavaDelegate {
                 String glavniUrednik=SecurityContextHolder.getContext().getAuthentication().getName();
                 realCasopis.setCasopisStatus(CasopisStatus.WAITING_FOR_INPUT);
                 realCasopis.setGlavniUrednik(glavniUrednik);
-                casopisService.save(realCasopis);
+                magazinService.save(realCasopis);
             }
         }
         execution.setVariable("flag_val",flag_val);

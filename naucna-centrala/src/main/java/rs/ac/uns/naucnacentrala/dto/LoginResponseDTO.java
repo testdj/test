@@ -7,13 +7,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class LoginResponseDTO {
 
     private String token;
-    private Long expiresIn;
-    private String username;
     private String role;
+    private String username;
+    private Long expiresIn;
 
 }

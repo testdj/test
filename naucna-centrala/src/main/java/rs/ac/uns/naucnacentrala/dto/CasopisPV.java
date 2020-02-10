@@ -13,30 +13,30 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class CasopisPV {
 
     private Long id;
 
-    private String naziv;
-
     private String issn;
+
+    private String naziv;
 
     private Long cena;
 
-    private String koPlaca;
-
     private String processInstanceId;
 
-    private Boolean enabled;
+    private String koPlaca;
 
     private CasopisStatus casopisStatus;
 
+    private Boolean enabled;
+
     private String glavniUrednik;
 
-    private LinkedHashMap<String, String> urednici = new LinkedHashMap<>();
-
     private LinkedHashMap<String, ArrayList<String>> recezenti = new LinkedHashMap<>();
+
+    private LinkedHashMap<String, String> urednici = new LinkedHashMap<>();
 
 }

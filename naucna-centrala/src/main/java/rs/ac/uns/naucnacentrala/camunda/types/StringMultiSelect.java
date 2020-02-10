@@ -1,41 +1,31 @@
 package rs.ac.uns.naucnacentrala.camunda.types;
 
-
-import lombok.NoArgsConstructor;
-import org.camunda.bpm.engine.ProcessEngineException;
 import org.camunda.bpm.engine.impl.form.type.AbstractFormFieldType;
 import org.camunda.bpm.engine.variable.Variables;
-import org.camunda.bpm.engine.variable.type.SerializableValueType;
-import org.camunda.bpm.engine.variable.type.ValueType;
-import org.camunda.bpm.engine.variable.value.ObjectValue;
-import org.camunda.bpm.engine.variable.value.StringValue;
 import org.camunda.bpm.engine.variable.value.TypedValue;
-import org.camunda.spin.plugin.variable.SpinValues;
-import org.camunda.spin.plugin.variable.value.JsonValue;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@NoArgsConstructor
-public class MultiSelectionFormType extends AbstractFormFieldType {
+public class StringMultiSelect extends AbstractFormFieldType {
 
-    protected Map<Long, String> values=new HashMap<>();
+    protected Map<String, String> values=new HashMap<>();
     private String TYPE_NAME;
 
-    public MultiSelectionFormType(Map<Long, String> values) {
+    public StringMultiSelect(Map<String, String> values) {
         this.values = values;
     }
-    public MultiSelectionFormType(String name){
+    public StringMultiSelect(String name){
         this.TYPE_NAME=name;
 
-    }
+    };
 
     @Override
     public String getName() {
         return TYPE_NAME;
     }
 
-    public Map<Long, String> getValues() {
+    public Map<String, String> getValues() {
         return this.values;
     }
 
@@ -62,6 +52,4 @@ public class MultiSelectionFormType extends AbstractFormFieldType {
     public Object convertFormValueToModelValue(Object o) {
         return null;
     }
-
-
 }

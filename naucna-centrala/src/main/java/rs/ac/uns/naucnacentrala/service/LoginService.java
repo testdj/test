@@ -12,10 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface LoginService {
 
-    public abstract User checkCredentials(JwtAuthenticationRequest request);
-    public abstract boolean register(User user, String role) throws Exception;
-    public abstract LoginResponseDTO login(JwtAuthenticationRequest request);
     public abstract void changePassword(String oldPassword, String newPassword, String username) throws Exception;
+    public abstract boolean register(User user, String role) throws Exception;
     public abstract UserTokenState refreshAuthenticationToken(HttpServletRequest request);
+    public abstract LoginResponseDTO login(JwtAuthenticationRequest request);
+    public abstract User checkCredentials(JwtAuthenticationRequest request);
 
 }

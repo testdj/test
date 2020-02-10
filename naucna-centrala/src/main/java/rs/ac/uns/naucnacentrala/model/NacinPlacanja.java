@@ -15,13 +15,12 @@ public class NacinPlacanja {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-
     @ManyToMany(mappedBy = "naciniPlacanja",cascade = {
             CascadeType.MERGE,
             CascadeType.PERSIST
     },fetch = FetchType.LAZY)
     private List<Casopis> casopisi=new ArrayList<Casopis>();
 
+    private String name;
 
 }

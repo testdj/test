@@ -4,10 +4,8 @@ import org.camunda.bpm.engine.IdentityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import rs.ac.uns.naucnacentrala.dto.LoginResponseDTO;
-import rs.ac.uns.naucnacentrala.dto.UserCredentialsDTO;
 import rs.ac.uns.naucnacentrala.dto.UserTokenState;
 import rs.ac.uns.naucnacentrala.model.Authority;
 import rs.ac.uns.naucnacentrala.model.User;
@@ -15,7 +13,6 @@ import rs.ac.uns.naucnacentrala.repository.AuthorityRepository;
 import rs.ac.uns.naucnacentrala.repository.UserRepository;
 import rs.ac.uns.naucnacentrala.security.TokenUtils;
 import rs.ac.uns.naucnacentrala.security.auth.JwtAuthenticationRequest;
-import rs.ac.uns.naucnacentrala.utils.ObjectMapperUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -26,20 +23,19 @@ import java.util.List;
 public class LoginServiceImpl implements  LoginService{
 
     @Autowired
-    TokenUtils tokenUtils;
-
-    @Autowired
     UserRepository userRepository;
 
     @Autowired
-    AuthorityRepository authorityRepository;
+    IdentityService identityService;
+
+    @Autowired
+    TokenUtils tokenUtils;
 
     @Autowired
     PasswordEncoder passwordEncoder;
 
     @Autowired
-    IdentityService identityService;
-
+    AuthorityRepository authorityRepository;
 
     @Override
     public User checkCredentials(JwtAuthenticationRequest request) {
@@ -55,20 +51,20 @@ public class LoginServiceImpl implements  LoginService{
 
     @Override
     public boolean register(User user, String role) throws Exception{
+        List<Authority> authorities = new ArrayList<>();
         Authority authority = authorityRepository.findOneByName(role);
         System.out.println("ROLEEE:" + role);
-        List<Authority> authorities = new ArrayList<>();
         authorities.add(authority);
         System.out.println("auttth: " + authority.getName() + authority.getAuthority() + authority.getId());
         System.out.println("AUTHORITIESSSS: " + authorities.toString());
-        user.setAuthorities(authorities);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setAuthorities(authorities);
         user = userRepository.save(user);
         org.camunda.bpm.engine.identity.User userCamunda=identityService.newUser(user.getUsername());
-        userCamunda.setEmail(user.getEmail());
-        userCamunda.setFirstName(user.getIme());
         userCamunda.setLastName(user.getPrezime());
+        userCamunda.setEmail(user.getEmail());
         userCamunda.setPassword(user.getPassword());
+        userCamunda.setFirstName(user.getIme());
         System.out.println("USERRRR: " + user.getUsername());
         identityService.saveUser(userCamunda);
         System.out.println("sacuvaooooooooo");
@@ -87,14 +83,30 @@ public class LoginServiceImpl implements  LoginService{
         User user=userRepository.findByUsername(request.getUsername());
         if(user!=null){
             if(passwordEncoder.matches(request.getPassword(),user.getPassword())&&user.isEnabled()){
-                String jwt = tokenUtils.generateToken(request.getUsername());
                 long expiresIn = tokenUtils.getExpiredIn();
-                LoginResponseDTO token=new LoginResponseDTO(jwt,expiresIn,user.getUsername(),((Authority)user.getAuthorities().toArray()[0]).getName());
+                String jwt = tokenUtils.generateToken(request.getUsername());
+                LoginResponseDTO token=new LoginResponseDTO(jwt,((Authority)user.getAuthorities().toArray()[0]).getName(),user.getUsername(),expiresIn);
                 // Vrati user-a sa tokenom kao odgovor na uspesnu autentifikaciju
                 return token;
             }
         }
         return null;
+    }
+
+    @Override
+    public UserTokenState refreshAuthenticationToken(HttpServletRequest request){
+        String token = tokenUtils.getToken(request);
+        String username = this.tokenUtils.getUsernameFromToken(token);
+        User user = (User) userRepository.findByUsername(username);
+        if (this.tokenUtils.canTokenBeRefreshed(token, user.getLastSifraResetDate())) {
+            long expiresIn = tokenUtils.getExpiredIn();
+            String refreshedToken = tokenUtils.refreshToken(token);
+            UserTokenState newToken=new UserTokenState(refreshedToken,expiresIn);
+            // Vrati user-a sa tokenom kao odgovor na uspesnu autentifikaciju
+            return newToken;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -105,22 +117,6 @@ public class LoginServiceImpl implements  LoginService{
             userRepository.save(user);
         }else{
             throw new Exception();
-        }
-    }
-
-    @Override
-    public UserTokenState refreshAuthenticationToken(HttpServletRequest request){
-        String token = tokenUtils.getToken(request);
-        String username = this.tokenUtils.getUsernameFromToken(token);
-        User user = (User) userRepository.findByUsername(username);
-        if (this.tokenUtils.canTokenBeRefreshed(token, user.getLastSifraResetDate())) {
-            String refreshedToken = tokenUtils.refreshToken(token);
-            long expiresIn = tokenUtils.getExpiredIn();
-            UserTokenState newToken=new UserTokenState(refreshedToken,expiresIn);
-            // Vrati user-a sa tokenom kao odgovor na uspesnu autentifikaciju
-            return newToken;
-        } else {
-            return null;
         }
     }
 

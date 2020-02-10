@@ -9,12 +9,12 @@ public interface CasopisRepository extends JpaRepository<Casopis,Long> {
 
     public Casopis findByIssn(String issn);
 
-    public Casopis findByNaziv(String naziv);
-
     public Casopis findByProcessInstanceId(String processInstanceId);
 
-    public List<Casopis> findByGlavniUrednik(String glavniUrednik);
+    public Casopis findByNaziv(String naziv);
 
     public List<Casopis> findAllByEnabled(Boolean enabled);
+
+    public List<Casopis> findByGlavniUrednik(String glavniUrednik);
 
 }

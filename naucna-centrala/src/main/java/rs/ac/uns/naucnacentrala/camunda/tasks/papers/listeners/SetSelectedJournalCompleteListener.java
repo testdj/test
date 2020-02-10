@@ -4,22 +4,18 @@ import org.camunda.bpm.engine.FormService;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.form.FormField;
-import org.camunda.bpm.engine.impl.form.type.EnumFormType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.naucnacentrala.camunda.service.JournalService;
-import rs.ac.uns.naucnacentrala.dto.CasopisDTO;
 import rs.ac.uns.naucnacentrala.dto.CasopisPV;
 import rs.ac.uns.naucnacentrala.model.Casopis;
 import rs.ac.uns.naucnacentrala.model.NaucnaOblast;
 import rs.ac.uns.naucnacentrala.model.User;
-import rs.ac.uns.naucnacentrala.service.CasopisService;
-import rs.ac.uns.naucnacentrala.utils.ObjectMapperUtils;
+import rs.ac.uns.naucnacentrala.service.MagazinService;
+import rs.ac.uns.naucnacentrala.utils.ObjectMapper;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class SetSelectedJournalCompleteListener implements TaskListener {
@@ -28,7 +24,7 @@ public class SetSelectedJournalCompleteListener implements TaskListener {
     JournalService journalService;
 
     @Autowired
-    CasopisService casopisService;
+    MagazinService magazinService;
 
     @Autowired
     FormService formService;
@@ -40,8 +36,8 @@ public class SetSelectedJournalCompleteListener implements TaskListener {
         if(formFieldList!=null){
             for(FormField field : formFieldList){
                 if( field.getId().equals("selBox1")){
-                    Casopis casopis = casopisService.getOne(Long.valueOf(field.getValue().getValue().toString()));
-                    CasopisPV casopisPV= ObjectMapperUtils.map(casopis, CasopisPV.class);
+                    Casopis casopis = magazinService.getOne(Long.valueOf(field.getValue().getValue().toString()));
+                    CasopisPV casopisPV= ObjectMapper.map(casopis, CasopisPV.class);
                     for(User recezent : casopis.getRecezenti()){
                         for(NaucnaOblast no : recezent.getNaucneOblasti()){
                             ArrayList<String> noRecezenti = casopisPV.getRecezenti().get(no.getId().toString());

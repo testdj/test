@@ -23,8 +23,8 @@ public class Authority implements GrantedAuthority {
     	
     }
 
-    @Override
-    public String getAuthority() {
+    @JsonIgnore
+    public String getName() {
         return name;
     }
 
@@ -32,8 +32,8 @@ public class Authority implements GrantedAuthority {
         this.name = name;
     }
 
-    @JsonIgnore
-    public String getName() {
+    @Override
+    public String getAuthority() {
         return name;
     }
 

@@ -7,8 +7,8 @@ public class TokenBasedAuthentication extends AbstractAuthenticationToken {
 
 	private static final long serialVersionUID = 1L;
 
-	private String token;
 	private final UserDetails principle;
+	private String token;
 
 	public TokenBasedAuthentication(UserDetails principle) {
 		super(principle.getAuthorities());
@@ -24,13 +24,13 @@ public class TokenBasedAuthentication extends AbstractAuthenticationToken {
 	}
 
 	@Override
-	public boolean isAuthenticated() {
-		return true;
+	public Object getCredentials() {
+		return token;
 	}
 
 	@Override
-	public Object getCredentials() {
-		return token;
+	public boolean isAuthenticated() {
+		return true;
 	}
 
 	@Override

@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-	@Query(value="SELECT u FROM User u WHERE u.username=?1")
-	User findByUsername(String username);
-
 	@Query(value = "SELECT u FROM User u JOIN u.authorities a WHERE a.name=?1")
 	List<User> findAllByRole(String role);
+
+	@Query(value="SELECT u FROM User u WHERE u.username=?1")
+	User findByUsername(String username);
 
 	User findByEmail(String email);
 	

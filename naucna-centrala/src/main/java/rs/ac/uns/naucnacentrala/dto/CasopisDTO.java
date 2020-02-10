@@ -12,19 +12,19 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class CasopisDTO {
 
     private Long id;
 
-    private String naziv;
-
     private String issn;
 
-    private Long cena;
+    private String naziv;
 
     private String koPlaca;
+
+    private Long cena;
 
     @NotEmpty(message="At least one must be selected.")
     private List<NaucnaOblastDTO> naucneOblasti=new ArrayList<>();
@@ -32,14 +32,12 @@ public class CasopisDTO {
     @NotEmpty(message="At least one must be selected.")
     private List<NacinPlacanjaDTO> naciniPlacanja=new ArrayList<>();
 
-    private String taskId;
+    private Boolean enabled;
 
     private String processInstanceId;
 
-    private Boolean enabled;
+    private String taskId;
 
     private CasopisStatus casopisStatus = CasopisStatus.WAITING_FOR_INPUT;
-
-
 
 }

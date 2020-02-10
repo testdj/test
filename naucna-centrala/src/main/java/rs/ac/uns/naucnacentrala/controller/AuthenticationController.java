@@ -16,18 +16,12 @@ import rs.ac.uns.naucnacentrala.dto.UserTokenState;
 import rs.ac.uns.naucnacentrala.security.auth.JwtAuthenticationRequest;
 import rs.ac.uns.naucnacentrala.service.LoginService;
 
-
-//Kontroler zaduzen za autentifikaciju korisnika
-
 @RestController
 @RequestMapping(value = "/restapi/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
 
-
 	@Autowired
 	LoginService loginService;
-
-
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest){

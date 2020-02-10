@@ -9,20 +9,19 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class KoautorDTO {
 
     private String ime;
 
-    private String prezime;
-
     private String email;
 
-    private String adresa;
+    private String prezime;
 
     private String grad;
 
     private String drzava;
 
+    private String adresa;
 }

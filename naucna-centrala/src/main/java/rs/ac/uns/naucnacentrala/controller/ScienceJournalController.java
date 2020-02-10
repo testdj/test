@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import rs.ac.uns.naucnacentrala.dto.CasopisDTO;
 import rs.ac.uns.naucnacentrala.dto.FormFieldsDto;
 import rs.ac.uns.naucnacentrala.repository.CasopisRepository;
-import rs.ac.uns.naucnacentrala.utils.CamundaUtils;
-import rs.ac.uns.naucnacentrala.utils.ObjectMapperUtils;
+import rs.ac.uns.naucnacentrala.utils.Utils;
+import rs.ac.uns.naucnacentrala.utils.ObjectMapper;
 
 import java.util.List;
 
@@ -25,28 +25,25 @@ public class ScienceJournalController {
 
     private static final String PROCESS_KEY="dodavanjeCasopisa";
 
-
-    @Autowired
-    CamundaUtils camundaUtils;
-
     @Autowired
     CasopisRepository casopisRepository;
 
+    @Autowired
+    Utils utils;
 
     @PreAuthorize("hasRole('UREDNIK')")
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<FormFieldsDto> startProcess(){
 
-        Task task = camundaUtils.startProcess(PROCESS_KEY);
-
-        return new ResponseEntity<>(camundaUtils.createFormDTO(task,task.getProcessInstanceId()), HttpStatus.OK);
+        Task task = utils.startProcess(PROCESS_KEY);
+        return new ResponseEntity<>(utils.createFormDTO(task,task.getProcessInstanceId()), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('UREDNIK')")
     @RequestMapping(method = RequestMethod.GET, value = "/mine")
     public ResponseEntity getAllMine(){
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<CasopisDTO> retList=ObjectMapperUtils.mapAll(casopisRepository.findByGlavniUrednik(username), CasopisDTO.class);
+        List<CasopisDTO> retList= ObjectMapper.mapAll(casopisRepository.findByGlavniUrednik(username), CasopisDTO.class);
         return ResponseEntity.ok().body(retList);
     }
 

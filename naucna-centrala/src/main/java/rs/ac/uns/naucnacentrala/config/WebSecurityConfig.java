@@ -28,7 +28,6 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -67,18 +66,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors().and()
-			// komunikacija izmedju klijenta i servera je stateless
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-			
-			// za neautorizovane zahteve posalji 401 gresku
-			.exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and()
+				// komunikacija izmedju klijenta i servera je stateless
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 
-			.authorizeRequests()
+				// za neautorizovane zahteve posalji 401 gresku
+				.exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and()
+
+				.authorizeRequests()
 				.antMatchers("/auth/**").permitAll()
 				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-			.antMatchers("/restapi/**").authenticated().and()
-			// presretni svaki zahtev filterom
-			.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, jwtUserDetailsService), BasicAuthenticationFilter.class);
+				.antMatchers("/restapi/**").authenticated().and()
+				// presretni svaki zahtev filterom
+				.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, jwtUserDetailsService), BasicAuthenticationFilter.class);
 
 		http.csrf().disable();
 	}
@@ -87,8 +86,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		// TokenAuthenticationFilter ce ignorisati sve ispod navedene putanje
-		web.ignoring().antMatchers(HttpMethod.GET, "/restapi/registration/**");
 		web.ignoring().antMatchers(HttpMethod.POST, "/restapi/bpmn/form/**","/restapi/auth/**");
+		web.ignoring().antMatchers(HttpMethod.GET, "/restapi/registration/**");
 	}
 
 	@Bean
@@ -96,8 +95,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		final CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(true);
-		config.addAllowedOrigin("*");
-		config.addAllowedHeader("*");
 		config.addAllowedMethod("OPTIONS");
 		config.addAllowedMethod("HEAD");
 		config.addAllowedMethod("GET");
@@ -105,6 +102,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		config.addAllowedMethod("POST");
 		config.addAllowedMethod("DELETE");
 		config.addAllowedMethod("PATCH");
+		config.addAllowedOrigin("*");
+		config.addAllowedHeader("*");
 		source.registerCorsConfiguration("/**", config);
 		return new CorsFilter(source);
 	}
@@ -112,3 +111,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
 }
+

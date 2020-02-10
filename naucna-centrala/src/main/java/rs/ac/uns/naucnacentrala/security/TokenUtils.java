@@ -17,22 +17,21 @@ import java.util.Date;
 @Component
 public class TokenUtils {
 
-	@Value("spring-security-demo")
-	private String APP_NAME;
-
 	@Value("somesecret")
 	public String SECRET;
 
-	@Value("300")
-	private int EXPIRES_IN;
-
+	@Value("spring-security-demo")
+	private String APP_NAME;
 
 	@Value("Authorization")
 	private String AUTH_HEADER;
 
+	@Value("300")
+	private int EXPIRES_IN;
+
 	static final String AUDIENCE_WEB = "web";
-	static final String AUDIENCE_MOBILE = "mobile";
 	static final String AUDIENCE_TABLET = "tablet";
+	static final String AUDIENCE_MOBILE = "mobile";
 
 
 	@Autowired
@@ -45,22 +44,22 @@ public class TokenUtils {
 	public String generateToken(String username) {
 		return Jwts.builder()
 				.setIssuer(APP_NAME)
-				.setSubject(username)
 				.setAudience(generateAudience())
-				.setIssuedAt(timeProvider.now())
+				.setSubject(username)
 				.setExpiration(generateExpirationDate())
+				.setIssuedAt(timeProvider.now())
 				.signWith(SIGNATURE_ALGORITHM, SECRET).compact();
+	}
+
+	private Date generateExpirationDate() {
+		long expiresIn =  EXPIRES_IN;
+		return new Date(timeProvider.now().getTime() + expiresIn * 1000 * 60); //u minutima
 	}
 
 	private String generateAudience() {
 		String audience = AUDIENCE_WEB;
 
 		return audience;
-	}
-
-	private Date generateExpirationDate() {
-		long expiresIn =  EXPIRES_IN;
-		return new Date(timeProvider.now().getTime() + expiresIn * 1000 * 60); //u minutima
 	}
 
 	// Functions for refreshing JWT token
@@ -71,13 +70,22 @@ public class TokenUtils {
 			final Claims claims = this.getAllClaimsFromToken(token);
 			claims.setIssuedAt(timeProvider.now());
 			refreshedToken = Jwts.builder()
-					.setClaims(claims)
 					.setExpiration(generateExpirationDate())
+					.setClaims(claims)
 					.signWith(SIGNATURE_ALGORITHM, SECRET).compact();
 		} catch (Exception e) {
 			refreshedToken = null;
 		}
 		return refreshedToken;
+	}
+
+	public Boolean validateToken(String token, UserDetails userDetails) {
+		User user = (User) userDetails;
+		final Date created = getIssuedAtDateFromToken(token);
+		final String username = getUsernameFromToken(token);
+
+		return (username != null && username.equals(userDetails.getUsername())
+				&& !isCreatedBeforeLastPasswordReset(created, user.getLastSifraResetDate()));
 	}
 
 	public Boolean canTokenBeRefreshed(String token, Date lastPasswordReset) {
@@ -88,27 +96,18 @@ public class TokenUtils {
 
 	// Functions for validating JWT token data
 
-	public Boolean validateToken(String token, UserDetails userDetails) {
-		User user = (User) userDetails;
-		final String username = getUsernameFromToken(token);
-		final Date created = getIssuedAtDateFromToken(token);
-		
-		return (username != null && username.equals(userDetails.getUsername())
-				&& !isCreatedBeforeLastPasswordReset(created, user.getLastSifraResetDate()));
-	}
-
 	private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
 		return (lastPasswordReset != null && created.before(lastPasswordReset));
-	}
-
-	private Boolean isTokenExpired(String token) {
-		final Date expiration = this.getExpirationDateFromToken(token);
-		return expiration.before(timeProvider.now());
 	}
 
 	private Boolean ignoreTokenExpiration(String token) {
 		String audience = this.getAudienceFromToken(token);
 		return (audience.equals(AUDIENCE_TABLET) || audience.equals(AUDIENCE_MOBILE));
+	}
+
+	private Boolean isTokenExpired(String token) {
+		final Date expiration = this.getExpirationDateFromToken(token);
+		return expiration.before(timeProvider.now());
 	}
 
 	// Functions for getting data from token
@@ -137,6 +136,17 @@ public class TokenUtils {
 		return username;
 	}
 
+	public String getAudienceFromToken(String token) {
+		String audience;
+		try {
+			final Claims claims = this.getAllClaimsFromToken(token);
+			audience = claims.getAudience();
+		} catch (Exception e) {
+			audience = null;
+		}
+		return audience;
+	}
+
 	public Date getIssuedAtDateFromToken(String token) {
 		Date issueAt;
 		try {
@@ -148,15 +158,8 @@ public class TokenUtils {
 		return issueAt;
 	}
 
-	public String getAudienceFromToken(String token) {
-		String audience;
-		try {
-			final Claims claims = this.getAllClaimsFromToken(token);
-			audience = claims.getAudience();
-		} catch (Exception e) {
-			audience = null;
-		}
-		return audience;
+	public int getExpiredIn() {
+		return EXPIRES_IN;
 	}
 
 	public Date getExpirationDateFromToken(String token) {
@@ -170,11 +173,11 @@ public class TokenUtils {
 		return expiration;
 	}
 
-	public int getExpiredIn() {
-		return EXPIRES_IN;
-	}
-
 	// Functions for getting JWT token out of HTTP request
+
+	public String getAuthHeaderFromHeader(HttpServletRequest request) {
+		return request.getHeader(AUTH_HEADER);
+	}
 
 	public String getToken(HttpServletRequest request) {
 		String authHeader = getAuthHeaderFromHeader(request);
@@ -184,10 +187,6 @@ public class TokenUtils {
 		}
 
 		return null;
-	}
-
-	public String getAuthHeaderFromHeader(HttpServletRequest request) {
-		return request.getHeader(AUTH_HEADER);
 	}
 
 }

@@ -5,19 +5,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class TaskDTO {
-
-    private String name;
 
     private String taskId;
 
-    private String rad;
+    private String name;
 
     private String processInstanceId;
 
+    private String rad;
 }
+

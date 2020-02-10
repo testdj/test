@@ -9,20 +9,19 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class FormSubmissionDto implements Serializable{
-	
-	String fieldId;
+
 	Object fieldValue;
-	
+	String fieldId;
+
 	
 	public FormSubmissionDto() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public FormSubmissionDto(String fieldId, String fieldValue) {
 		super();
-		this.fieldId = fieldId;
 		this.fieldValue = fieldValue;
+		this.fieldId = fieldId;
 	}
 
 	

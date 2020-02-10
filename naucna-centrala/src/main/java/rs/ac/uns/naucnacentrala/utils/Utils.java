@@ -24,28 +24,22 @@ import java.util.HashMap;
 import java.util.List;
 
 @Component
-public class CamundaUtils {
+public class Utils {
 
     @Autowired
-    FormService formService;
+    ObjectMapper objectMapper;
 
     @Autowired
     RuntimeService runtimeService;
 
     @Autowired
-    TaskService taskService;
+    FormService formService;
 
     @Autowired
     IdentityService identityService;
 
     @Autowired
-    ObjectMapper objectMapper;
-
-    public FormFieldsDto createFormDTO(Task task, String processInstanceId){
-        TaskFormData tfd = formService.getTaskFormData(task.getId());
-        List<FormField> properties = tfd.getFormFields();
-        return new FormFieldsDto(task.getId(),processInstanceId,properties);
-    }
+    TaskService taskService;
 
     public HashMap<String, Object> mapListToDto(List<FormSubmissionDto> list)
     {
@@ -57,6 +51,12 @@ public class CamundaUtils {
         }
 
         return map;
+    }
+
+    public FormFieldsDto createFormDTO(Task task, String processInstanceId){
+        TaskFormData tfd = formService.getTaskFormData(task.getId());
+        List<FormField> properties = tfd.getFormFields();
+        return new FormFieldsDto(task.getId(),processInstanceId,properties);
     }
 
     public Task startProcess(String processKey) {

@@ -19,22 +19,21 @@ import java.io.IOException;
 //Sem nad putanjama navedenim u WebSecurityConfig.configure(WebSecurity web)
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
+	private UserDetailsService userDetailsService;
 
 	private TokenUtils tokenUtils;
 
-	private UserDetailsService userDetailsService;
-
 	public TokenAuthenticationFilter(TokenUtils tokenHelper, UserDetailsService userDetailsService) {
-		this.tokenUtils = tokenHelper;
 		this.userDetailsService = userDetailsService;
+		this.tokenUtils = tokenHelper;
 	}
 
 	@Override
 	public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
-		String username;
 		String authToken = tokenUtils.getToken(request);
+		String username;
 		if (authToken != null) {
 			// uzmi username iz tokena
 			username = tokenUtils.getUsernameFromToken(authToken);

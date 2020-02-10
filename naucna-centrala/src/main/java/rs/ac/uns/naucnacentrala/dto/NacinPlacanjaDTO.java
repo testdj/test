@@ -7,11 +7,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class NacinPlacanjaDTO {
 
-    private Long id;
     private String name;
+    private Long id;
 
 }

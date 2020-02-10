@@ -13,11 +13,11 @@ import org.camunda.spin.plugin.variable.value.SpinValue;
 
 import static org.camunda.spin.Spin.JSON;
 
-public class JsonFormType extends AbstractFormFieldType {
+public class JsonForm extends AbstractFormFieldType {
 
     private String TYPE_NAME;
 
-    public JsonFormType(String name){
+    public JsonForm(String name){
         this.TYPE_NAME=name;
     }
 

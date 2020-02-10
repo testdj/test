@@ -8,13 +8,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserCredentialsDTO {
 
-    private String username;
     private String password;
-
-
-
+    private String username;
 }

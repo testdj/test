@@ -25,12 +25,12 @@ public class NaucnaOblast implements Serializable {
             CascadeType.MERGE,
             CascadeType.PERSIST
     }, fetch = FetchType.LAZY)
-    private List<Casopis> casopisi=new ArrayList<Casopis>();
+    private List<User> users=new ArrayList<User>();
 
     @ManyToMany(mappedBy = "naucneOblasti",cascade = {
             CascadeType.MERGE,
             CascadeType.PERSIST
     }, fetch = FetchType.LAZY)
-    private List<User> users=new ArrayList<User>();
+    private List<Casopis> casopisi=new ArrayList<Casopis>();
 
 }

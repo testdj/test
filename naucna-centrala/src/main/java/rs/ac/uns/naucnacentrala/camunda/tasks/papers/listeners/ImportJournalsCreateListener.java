@@ -7,13 +7,9 @@ import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.impl.form.type.EnumFormType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import rs.ac.uns.naucnacentrala.camunda.service.JournalService;
-import rs.ac.uns.naucnacentrala.camunda.types.MultiSelectionFormType;
 
 import rs.ac.uns.naucnacentrala.model.Casopis;
-import rs.ac.uns.naucnacentrala.model.NacinPlacanja;
-import rs.ac.uns.naucnacentrala.model.NaucnaOblast;
-import rs.ac.uns.naucnacentrala.service.CasopisService;
+import rs.ac.uns.naucnacentrala.service.MagazinService;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +21,7 @@ public class ImportJournalsCreateListener implements TaskListener {
     FormService formService;
 
     @Autowired
-    CasopisService casopisService;
+    MagazinService magazinService;
 
     @Override
     public void notify(DelegateTask delegateTask) {
@@ -35,7 +31,7 @@ public class ImportJournalsCreateListener implements TaskListener {
             for(FormField field : formFieldList){
                 if( field.getId().equals("selBox1")){
                     Map<String,String> items = ((EnumFormType)field.getType()).getValues();
-                    for(Casopis casopis : casopisService.getAllActivated()){
+                    for(Casopis casopis : magazinService.getAllActivated()){
                         items.put(casopis.getId().toString(),casopis.getNaziv());
                     }
                 }

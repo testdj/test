@@ -6,7 +6,7 @@ import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.form.FormField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import rs.ac.uns.naucnacentrala.camunda.types.MultiSelectionFormType;
+import rs.ac.uns.naucnacentrala.camunda.types.MultiSelect;
 import rs.ac.uns.naucnacentrala.model.User;
 import rs.ac.uns.naucnacentrala.repository.UserRepository;
 
@@ -28,13 +28,13 @@ public class ImportUnRTaskListener implements TaskListener {
         if(formFieldList!=null){
             for(FormField field : formFieldList){
                 if( field.getId().equals("uredniciSel")){
-                    Map<Long,String> items = ((MultiSelectionFormType)field.getType()).getValues();
+                    Map<Long,String> items = ((MultiSelect)field.getType()).getValues();
                     for(User user : userRepository.findAllByRole("ROLE_UREDNIK")){
                         items.put(user.getId(),user.getUsername());
                     }
                 }
                 if( field.getId().equals("recezentiSel")){
-                    Map<Long,String> items = ((MultiSelectionFormType)field.getType()).getValues();
+                    Map<Long,String> items = ((MultiSelect)field.getType()).getValues();
                     for(User user : userRepository.findAllByRole("ROLE_RECEZENT")){
                         items.put(user.getId(),user.getUsername());
                     }

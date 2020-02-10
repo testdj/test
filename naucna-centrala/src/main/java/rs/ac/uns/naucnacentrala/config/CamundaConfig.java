@@ -13,9 +13,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
-import rs.ac.uns.naucnacentrala.camunda.types.JsonFormType;
-import rs.ac.uns.naucnacentrala.camunda.types.MultiSelectionFormType;
-import rs.ac.uns.naucnacentrala.camunda.types.MultiSelectionStringFormType;
+import rs.ac.uns.naucnacentrala.camunda.types.JsonForm;
+import rs.ac.uns.naucnacentrala.camunda.types.MultiSelect;
+import rs.ac.uns.naucnacentrala.camunda.types.StringMultiSelect;
 
 
 import javax.sql.DataSource;
@@ -49,12 +49,12 @@ public class CamundaConfig {
         }
         config.setDefaultSerializationFormat("application/json");
         config.getProcessEnginePlugins().add(new SpinProcessEnginePlugin());
-        config.getCustomFormTypes().add(new MultiSelectionFormType("urednici-multi-select"));
-        config.getCustomFormTypes().add(new MultiSelectionFormType("recezenti-multi-select"));
-        config.getCustomFormTypes().add(new MultiSelectionStringFormType("sel-recezenti-multi-select"));
-        config.getCustomFormTypes().add(new MultiSelectionFormType("first-multi-select"));
-        config.getCustomFormTypes().add(new MultiSelectionFormType("second-multi-select"));
-        config.getCustomFormTypes().add(new JsonFormType("add-children"));
+        config.getCustomFormTypes().add(new MultiSelect("urednici-multi-select"));
+        config.getCustomFormTypes().add(new MultiSelect("recezenti-multi-select"));
+        config.getCustomFormTypes().add(new StringMultiSelect("sel-recezenti-multi-select"));
+        config.getCustomFormTypes().add(new MultiSelect("first-multi-select"));
+        config.getCustomFormTypes().add(new MultiSelect("second-multi-select"));
+        config.getCustomFormTypes().add(new JsonForm("add-children"));
 
         config.setDeploymentResources(resourceLoader.getResources("classpath:/processes/*.bpmn"));
 

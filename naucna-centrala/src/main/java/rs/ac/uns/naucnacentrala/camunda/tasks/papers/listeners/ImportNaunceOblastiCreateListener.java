@@ -7,10 +7,7 @@ import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.impl.form.type.EnumFormType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import rs.ac.uns.naucnacentrala.camunda.types.MultiSelectionFormType;
-import rs.ac.uns.naucnacentrala.model.NacinPlacanja;
 import rs.ac.uns.naucnacentrala.model.NaucnaOblast;
-import rs.ac.uns.naucnacentrala.repository.NacinPlacanjaRepository;
 import rs.ac.uns.naucnacentrala.repository.NaucnaOblastRepository;
 
 import java.util.List;

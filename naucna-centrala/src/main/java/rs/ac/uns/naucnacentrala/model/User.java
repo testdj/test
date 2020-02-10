@@ -31,30 +31,28 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "password", unique = false, nullable = false)
+    private String password;
 
     @Column(name = "username", unique = true, nullable = false)
     private String username;
 
-    @Column(name = "password", unique = false, nullable = false)
-    private String password;
+    @Column(name = "prezime", unique = false, nullable = false)
+    private String prezime;
 
     @Column(name = "ime", unique = false, nullable = false)
     private String ime;
 
-    @Column(name = "prezime", unique = false, nullable = false)
-    private String prezime;
-
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "enabled")
-    private boolean enabled;
 
     private String grad;
 
+    private String titula;
+
     private String drzava;
 
-    private String titula;
 
     @Column(name = "last_password_reset_date")
     private Timestamp lastSifraResetDate;
@@ -68,6 +66,8 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "naucnaoblast_id", referencedColumnName = "id"))
     private List<NaucnaOblast> naucneOblasti=new ArrayList<>();
 
+    @Column(name = "enabled")
+    private boolean enabled;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_authority",
@@ -75,6 +75,11 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
     private List<Authority> authorities;
 
+    @ManyToMany(mappedBy = "urednici",cascade = {
+            CascadeType.MERGE,
+            CascadeType.PERSIST
+    }, fetch = FetchType.LAZY)
+    private Set<Casopis> uredjujemCasopise=new HashSet<>();
 
     @ManyToMany(mappedBy = "recezenti",cascade = {
             CascadeType.MERGE,
@@ -82,11 +87,6 @@ public class User implements UserDetails {
     }, fetch = FetchType.LAZY)
     private List<Casopis> recenziramCasopise=new ArrayList<Casopis>();
 
-    @ManyToMany(mappedBy = "urednici",cascade = {
-            CascadeType.MERGE,
-            CascadeType.PERSIST
-    }, fetch = FetchType.LAZY)
-    private Set<Casopis> uredjujemCasopise=new HashSet<>();
 
 
     @Override
@@ -94,7 +94,11 @@ public class User implements UserDetails {
         return enabled;
     }
 
-
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -104,19 +108,13 @@ public class User implements UserDetails {
 
     @JsonIgnore
     @Override
-    public boolean isAccountNonExpired() {
+    public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @JsonIgnore
-    @Override
-    public boolean isCredentialsNonExpired() {
         return true;
     }
 

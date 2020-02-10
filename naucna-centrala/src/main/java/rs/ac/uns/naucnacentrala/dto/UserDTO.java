@@ -18,8 +18,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserDTO {
 
     private Long id;
@@ -28,25 +28,24 @@ public class UserDTO {
     @NotNull(message="Username cannot be null")
     private String username;
 
+    private String ime;
+
     @NotBlank(message="Username cannot be blank")
     @NotNull(message="Username cannot be null")
     private String password;
-
-    private String ime;
 
     private String prezime;
 
     @Email(message="Invalid email format.")
     private String email;
 
-    private String grad;
-
     private String drzava;
+
+    private String grad;
 
     private String titula;
 
-    private List<NaucnaOblastDTO> naucneOblasti = new ArrayList<NaucnaOblastDTO>();
-
     private String taskId;
 
+    private List<NaucnaOblastDTO> naucneOblasti = new ArrayList<NaucnaOblastDTO>();
 }

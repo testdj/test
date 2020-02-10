@@ -20,10 +20,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 	protected final Log LOGGER = LogFactory.getLog(getClass());
 
 	@Autowired
-	private UserRepository userRepository;
+	private PasswordEncoder passwordEncoder;
 
 	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private UserRepository userRepository;
 
 	@Autowired
 	private AuthenticationManager authenticationManager;

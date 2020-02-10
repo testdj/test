@@ -1,6 +1,5 @@
 package rs.ac.uns.naucnacentrala.camunda.tasks.registration;
 
-import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,17 +9,9 @@ import rs.ac.uns.naucnacentrala.dto.UserDTO;
 import rs.ac.uns.naucnacentrala.model.User;
 import rs.ac.uns.naucnacentrala.repository.UserRepository;
 import rs.ac.uns.naucnacentrala.service.LoginService;
-import rs.ac.uns.naucnacentrala.utils.ObjectMapperUtils;
+import rs.ac.uns.naucnacentrala.utils.ObjectMapper;
 
-import javax.persistence.RollbackException;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
 
 @Service
 public class RegValidationTask implements JavaDelegate {
@@ -47,7 +38,7 @@ public class RegValidationTask implements JavaDelegate {
                 execution.setVariable("validationErrors", valErrors);
                 flag_val = false;
             }else {
-                User realUser=ObjectMapperUtils.map(user,User.class);
+                User realUser= ObjectMapper.map(user,User.class);
                 realUser.setEnabled(false);
                 System.out.println("REAL USERRRRRRRRRRRRRRRRRRRRRRRR: " + realUser.getUsername() + realUser.getEmail());
                 execution.setVariable("validationErrors", null);

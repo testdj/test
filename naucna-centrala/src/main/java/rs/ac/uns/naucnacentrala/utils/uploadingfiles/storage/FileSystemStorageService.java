@@ -31,14 +31,14 @@ public class FileSystemStorageService implements StorageService {
 	public String store(MultipartFile file) {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
 		try {
-			if (file.isEmpty()) {
-				throw new StorageException("Failed to store empty file " + filename);
-			}
 			if (filename.contains("..")) {
 				// This is a security check
 				throw new StorageException(
 						"Cannot store file with relative path outside current directory "
 								+ filename);
+			}
+			if (file.isEmpty()) {
+				throw new StorageException("Failed to store empty file " + filename);
 			}
 			try (InputStream inputStream = file.getInputStream()) {
 				Files.copy(inputStream, this.rootLocation.resolve(filename),
@@ -65,11 +65,6 @@ public class FileSystemStorageService implements StorageService {
 	}
 
 	@Override
-	public Path load(String filename) {
-		return rootLocation.resolve(filename);
-	}
-
-	@Override
 	public Resource loadAsResource(String filename) {
 		try {
 			Path file = load(filename);
@@ -89,8 +84,8 @@ public class FileSystemStorageService implements StorageService {
 	}
 
 	@Override
-	public void deleteAll() {
-		FileSystemUtils.deleteRecursively(rootLocation.toFile());
+	public Path load(String filename) {
+		return rootLocation.resolve(filename);
 	}
 
 	@Override
@@ -101,5 +96,10 @@ public class FileSystemStorageService implements StorageService {
 		catch (IOException e) {
 			throw new StorageException("Could not initialize storage", e);
 		}
+	}
+
+	@Override
+	public void deleteAll() {
+		FileSystemUtils.deleteRecursively(rootLocation.toFile());
 	}
 }

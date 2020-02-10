@@ -6,15 +6,19 @@ import java.util.List;
 
 public class FormFieldsDto {
 
-	String taskId;
-	List<FormField> formFields;
 	String processInstanceId;
+	List<FormField> formFields;
+	String taskId;
 
 	public FormFieldsDto(String taskId, String processInstanceId, List<FormField> formFields) {
 		super();
 		this.taskId = taskId;
-		this.formFields = formFields;
 		this.processInstanceId = processInstanceId;
+		this.formFields = formFields;
+	}
+
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
 	}
 
 	public FormFieldsDto() {
@@ -25,8 +29,8 @@ public class FormFieldsDto {
 		return taskId;
 	}
 
-	public void setTaskId(String taskId) {
-		this.taskId = taskId;
+	public String getProcessInstanceId() {
+		return processInstanceId;
 	}
 
 	public List<FormField> getFormFields() {
@@ -35,10 +39,6 @@ public class FormFieldsDto {
 
 	public void setFormFields(List<FormField> formFields) {
 		this.formFields = formFields;
-	}
-
-	public String getProcessInstanceId() {
-		return processInstanceId;
 	}
 
 	public void setProcessInstanceId(String processInstanceId) {
