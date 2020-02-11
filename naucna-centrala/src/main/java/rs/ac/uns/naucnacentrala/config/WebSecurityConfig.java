@@ -22,11 +22,7 @@ import org.springframework.web.filter.CorsFilter;
 import rs.ac.uns.naucnacentrala.security.TokenUtils;
 import rs.ac.uns.naucnacentrala.security.auth.RestAuthenticationEntryPoint;
 import rs.ac.uns.naucnacentrala.security.auth.TokenAuthenticationFilter;
-import rs.ac.uns.naucnacentrala.service.CustomUserDetailsService;
-
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import rs.ac.uns.naucnacentrala.authorisation.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity

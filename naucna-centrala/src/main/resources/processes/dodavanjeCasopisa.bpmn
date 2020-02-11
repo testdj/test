@@ -23,7 +23,7 @@
       <bpmn:outgoing>SequenceFlow_039lw2f</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_1nvpl3w" sourceRef="StartEvent_1" targetRef="ExclusiveGateway_1y1mu3x" />
-    <bpmn:serviceTask id="validacija_podataka" name="Validacija podataka i kreiranje casopisa" camunda:class="rs.ac.uns.naucnacentrala.camunda.tasks.journals.add.AddJournalValidationTask">
+    <bpmn:serviceTask id="validacija_podataka" name="Validacija podataka i kreiranje casopisa" camunda:class="rs.ac.uns.naucnacentrala.camunda.journal.AddJournalValidationTask">
       <bpmn:incoming>SequenceFlow_039lw2f</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_10fyina</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -52,7 +52,7 @@
       <bpmn:outgoing>SequenceFlow_02sq90x</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_02sq90x" sourceRef="unos_uir" targetRef="validacija_uir" />
-    <bpmn:serviceTask id="validacija_uir" name="Validacija i unos urednika i recezenata" camunda:class="rs.ac.uns.naucnacentrala.camunda.tasks.journals.add.ActivateJournalValidationTask">
+    <bpmn:serviceTask id="validacija_uir" name="Validacija i unos urednika i recezenata" camunda:class="rs.ac.uns.naucnacentrala.camunda.journal.ActivateJournalValidationTask">
       <bpmn:incoming>SequenceFlow_02sq90x</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0y5twvu</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -91,7 +91,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!potvrda_admina}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_0t5djrh" sourceRef="ExclusiveGateway_0l4fk1z" targetRef="aktiviranje_casopisa" />
-    <bpmn:serviceTask id="aktiviranje_casopisa" name="Aktiviranje casopisa" camunda:class="rs.ac.uns.naucnacentrala.camunda.tasks.journals.add.ActivateJournalTask">
+    <bpmn:serviceTask id="aktiviranje_casopisa" name="Aktiviranje casopisa" camunda:class="rs.ac.uns.naucnacentrala.camunda.journal.ActivateJournalTask">
       <bpmn:incoming>SequenceFlow_0t5djrh</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_02sviej</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -105,7 +105,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_039lw2f" sourceRef="unos_podataka_o_casopisu" targetRef="validacija_podataka" />
     <bpmn:sequenceFlow id="SequenceFlow_01yqf2n" sourceRef="ExclusiveGateway_0ex72pk" targetRef="ExclusiveGateway_0xmevj1" />
     <bpmn:sequenceFlow id="SequenceFlow_0a5t8ux" sourceRef="reset_status" targetRef="ExclusiveGateway_1y1mu3x" />
-    <bpmn:serviceTask id="reset_status" name="Reset status" camunda:class="rs.ac.uns.naucnacentrala.camunda.tasks.journals.add.ResetStatusTask">
+    <bpmn:serviceTask id="reset_status" name="Reset status" camunda:class="rs.ac.uns.naucnacentrala.camunda.journal.ResetStatusTask">
       <bpmn:incoming>SequenceFlow_0aahrha</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0a5t8ux</bpmn:outgoing>
     </bpmn:serviceTask>

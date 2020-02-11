@@ -28,12 +28,12 @@
       <bpmn:incoming>SequenceFlow_07eueqr</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0kizh48" sourceRef="StartEvent_1" targetRef="ExclusiveGateway_1vujzso" />
-    <bpmn:serviceTask id="validacija" name="Validacija" camunda:class="rs.ac.uns.naucnacentrala.camunda.tasks.registration.RegValidationTask">
+    <bpmn:serviceTask id="validacija" name="Validacija" camunda:class="rs.ac.uns.naucnacentrala.camunda.user.RegValidationTask">
       <bpmn:incoming>SequenceFlow_0d0k73c</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1d6mi0e</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="SequenceFlow_1d6mi0e" sourceRef="validacija" targetRef="ExclusiveGateway_05jii1g" />
-    <bpmn:sendTask id="slanje_emaila" name="Slanje emaila" camunda:class="rs.ac.uns.naucnacentrala.camunda.tasks.registration.RegMailSenderTask">
+    <bpmn:sendTask id="slanje_emaila" name="Slanje emaila" camunda:class="rs.ac.uns.naucnacentrala.camunda.user.RegMailSenderTask">
       <bpmn:incoming>SequenceFlow_1g8tpt6</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1ks9amj</bpmn:outgoing>
     </bpmn:sendTask>
@@ -43,7 +43,7 @@
       <bpmn:outgoing>SequenceFlow_0lzx72u</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_0lzx72u" sourceRef="potvrda_emaila" targetRef="procesiranje_potvrde" />
-    <bpmn:serviceTask id="procesiranje_potvrde" name="Procesiranje registracije" camunda:class="rs.ac.uns.naucnacentrala.camunda.tasks.registration.EnableUserTask">
+    <bpmn:serviceTask id="procesiranje_potvrde" name="Procesiranje registracije" camunda:class="rs.ac.uns.naucnacentrala.camunda.user.EnableUserTask">
       <bpmn:incoming>SequenceFlow_0lzx72u</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0s0ir24</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -74,7 +74,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_1fmprek" name="recezent potvrdjen" sourceRef="ExclusiveGateway_0ecwtoq" targetRef="Task_0asqh9w">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${potvrdi_recezent}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Task_0asqh9w" name="Dodela uloge recezenta" camunda:class="rs.ac.uns.naucnacentrala.camunda.tasks.registration.SetRecezentTask">
+    <bpmn:serviceTask id="Task_0asqh9w" name="Dodela uloge recezenta" camunda:class="rs.ac.uns.naucnacentrala.camunda.user.SetRecezentTask">
       <bpmn:incoming>SequenceFlow_1fmprek</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1yzjptb</bpmn:outgoing>
     </bpmn:serviceTask>
