@@ -4,6 +4,8 @@ import org.camunda.bpm.engine.FormService;
 import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.form.FormField;
+import org.camunda.bpm.engine.form.FormFieldValidationConstraint;
 import org.camunda.bpm.engine.runtime.Execution;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.variable.value.BooleanValue;
@@ -32,7 +34,6 @@ import java.util.List;
 @CrossOrigin("*")
 public class BPMNController {
 
-    private static final String UREDNIK_PROCESS_KEY="registracijaUrednika";
     private static final String VALIDATION_FLAG_VARIABLE="flag_val";
     private static final String VALIDATION_ERRORS_VARIABLE="validationErrors";
 
@@ -67,6 +68,12 @@ public class BPMNController {
         HashMap<String, Object> map = utils.mapListToDto(dto);
         Task task=taskService.createTaskQuery().taskId(taskId).singleResult();
         String processInstanceId=task.getProcessInstanceId();
+
+        HashMap<String,String> validationMap = formValidation(taskId,map);
+        if(!validationMap.isEmpty()){
+            return ResponseEntity.badRequest().body(validationMap);
+        }
+
         if(task.getAssignee().equals(auth.getName())) {
             formService.submitTaskForm(taskId, map);
             if(map.get("koautori")!=null) {
@@ -172,15 +179,6 @@ public class BPMNController {
         return ResponseEntity.ok().body(journalService.getAllNotActivated(auth.getName()));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @RequestMapping(method = RequestMethod.GET, value = "/urednik")
-    public ResponseEntity<FormFieldsDto> startProcessUrednik(){
-        Task task = utils.startProcess(UREDNIK_PROCESS_KEY);
-        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
-        return new ResponseEntity<>(utils.createFormDTO(task,task.getProcessInstanceId()), HttpStatus.OK);
-    }
-
-
     @RequestMapping(method = RequestMethod.GET, value = "/tasks/{id}")
     public ResponseEntity getMyTask(@PathVariable String id){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -221,5 +219,33 @@ public class BPMNController {
         return ResponseEntity.ok().body(ret);
     }
 
+    private HashMap<String,String> formValidation(String taskId, HashMap<String,Object> dataMap) {
+        HashMap<String, String> ret = new HashMap<>();
+        List<FormField> formFields = formService.getTaskFormData(taskId).getFormFields();
+        for (FormField field : formFields) {
+            List<FormFieldValidationConstraint> constraints = field.getValidationConstraints();
+            for (FormFieldValidationConstraint constraint : constraints) {
+                switch (constraint.getName()) {
+                    case "required": {
+                        if (!dataMap.containsKey(field.getId())) {
+                            ret.put(field.getId(), "This field is required");
+                        }
+                        break;
+                    }
+                    case "readonly": {
+                        if (dataMap.containsKey(field.getId())) {
+                            ret.put(field.getId(), "This field is readonly");
+                        }
+                        break;
+                    }
+                }
+            }
+        }
 
+        if (!ret.isEmpty()) {
+            ret.put("taskID", taskId);
+        }
+
+        return ret;
+    }
 }

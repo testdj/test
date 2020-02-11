@@ -17,4 +17,6 @@ public interface CasopisRepository extends JpaRepository<Casopis,Long> {
 
     public List<Casopis> findByGlavniUrednik(String glavniUrednik);
 
+    public Casopis findOneById(Long id);
+
 }

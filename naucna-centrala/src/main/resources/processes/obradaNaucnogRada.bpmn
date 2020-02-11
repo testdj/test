@@ -104,11 +104,6 @@
       <bpmn:outgoing>SequenceFlow_0xslgbx</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_0xslgbx" sourceRef="unos_podataka_o_radu" targetRef="Task_0tz1m7n" />
-    <bpmn:sendTask id="slanje_mejla_uia" name="Slanje mejla uredniku i autoru" camunda:expression="wtv">
-      <bpmn:incoming>SequenceFlow_0hnjol0</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_08myowb</bpmn:outgoing>
-      <bpmn:multiInstanceLoopCharacteristics camunda:collection="${mailList}" camunda:elementVariable="oneUser" />
-    </bpmn:sendTask>
     <bpmn:sequenceFlow id="SequenceFlow_0clm7iy" sourceRef="get_aau_id" targetRef="ExclusiveGateway_1kl4s3b" />
     <bpmn:scriptTask id="get_aau_id" name="Dobavi id autora i glavnog urednika" scriptFormat="JavaScript">
       <bpmn:incoming>SequenceFlow_1kzsyb3</bpmn:incoming>
@@ -136,7 +131,7 @@ execution.setVariable("mailList", instance);</bpmn:script>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!flag_r}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_0edlkl4" sourceRef="Task_0tz1m7n" targetRef="ExclusiveGateway_18i9e56" />
-    <bpmn:serviceTask id="Task_0tz1m7n" name="Validacija podataka o radu" camunda:expression="${true}" camunda:resultVariable="flag_r">
+    <bpmn:serviceTask id="Task_0tz1m7n" name="Validacija podataka o radu" camunda:class="rs.ac.uns.naucnacentrala.camunda.paper.ValidatePaper">
       <bpmn:extensionElements>
         <camunda:executionListener event="end">
           <camunda:script scriptFormat="Groovy">execution.setVariable("koautori",new ArrayList());</camunda:script>
@@ -145,7 +140,6 @@ execution.setVariable("mailList", instance);</bpmn:script>
       <bpmn:incoming>SequenceFlow_0xslgbx</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0edlkl4</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="SequenceFlow_08myowb" sourceRef="slanje_mejla_uia" targetRef="urednik_proverava_podatke" />
     <bpmn:userTask id="urednik_proverava_podatke" name="Urednik proverava podatke" camunda:assignee="${casopis.glavniUrednik}">
       <bpmn:extensionElements>
         <camunda:formData>
@@ -184,12 +178,12 @@ execution.setVariable("mailList", instance);</bpmn:script>
           <camunda:formField id="komentar_za_odbijanje" label="Komentar:" type="string" />
         </camunda:formData>
       </bpmn:extensionElements>
-      <bpmn:incoming>SequenceFlow_08myowb</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0omnuva</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0rvfsf1</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_0rvfsf1" sourceRef="urednik_proverava_podatke" targetRef="ExclusiveGateway_12ghyo8" />
     <bpmn:scriptTask id="prodnadji_urednika_no" name="Pronadji urednika naucne oblasti" scriptFormat="Groovy">
-      <bpmn:incoming>SequenceFlow_014g0fp</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_06y4y62</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0nb0epc</bpmn:outgoing>
       <bpmn:script>casopis=execution.getVariable("casopis");
 naucnaOblast=execution.getVariable("naucna_oblast");
@@ -213,7 +207,7 @@ execution.setVariable("selectedRecezenti",new ArrayList());</bpmn:script>
     <bpmn:sequenceFlow id="SequenceFlow_1yzgqj2" name="zahtev odbijen" sourceRef="ExclusiveGateway_12ghyo8" targetRef="mail_odbijanje">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${potvrdaOsnovnihPodataka=="ne"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sendTask id="mail_odbijanje" name="Slanje razloga odbijanja autoru" camunda:expression="wtv">
+    <bpmn:sendTask id="mail_odbijanje" name="Slanje razloga odbijanja autoru" camunda:class="rs.ac.uns.naucnacentrala.camunda.paper.NotifyAuthorAndEditor">
       <bpmn:incoming>SequenceFlow_1yzgqj2</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1ontofy</bpmn:outgoing>
     </bpmn:sendTask>
@@ -251,11 +245,11 @@ execution.setVariable("selectedRecezenti",new ArrayList());</bpmn:script>
       <bpmn:outgoing>SequenceFlow_014g0fp</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_1xv0bsp</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="SequenceFlow_014g0fp" sourceRef="ExclusiveGateway_1oqetj7" targetRef="prodnadji_urednika_no" />
+    <bpmn:sequenceFlow id="SequenceFlow_014g0fp" sourceRef="ExclusiveGateway_1oqetj7" targetRef="Task_1h5w7p7" />
     <bpmn:sequenceFlow id="SequenceFlow_1xv0bsp" sourceRef="ExclusiveGateway_1oqetj7" targetRef="unos_vremena_za_ispravku">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${potvrdaFormata=="ne"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sendTask id="mejl_za_ispravku" name="Slanje mejla autoru za ispravku rada" camunda:expression="wtv">
+    <bpmn:sendTask id="mejl_za_ispravku" name="Slanje mejla autoru za ispravku rada" camunda:class="rs.ac.uns.naucnacentrala.camunda.paper.NotifyAuthorAndEditor">
       <bpmn:incoming>SequenceFlow_08hx49q</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1pnc8h8</bpmn:outgoing>
     </bpmn:sendTask>
@@ -293,7 +287,7 @@ if(formFields!=null){
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1ff6b3c" sourceRef="IntermediateThrowEvent_1ct8mu4" targetRef="mail_odbijanje_vreme" />
-    <bpmn:sendTask id="mail_odbijanje_vreme" name="Slanje maila za odbijanje zbog tehnickih razloga" camunda:expression="wtv">
+    <bpmn:sendTask id="mail_odbijanje_vreme" name="Slanje maila za odbijanje zbog tehnickih razloga" camunda:class="wtvrs.ac.uns.naucnacentrala.camunda.paper.NotifyAuthorAndEditor">
       <bpmn:incoming>SequenceFlow_1ff6b3c</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_14k0ifg</bpmn:outgoing>
     </bpmn:sendTask>
@@ -320,7 +314,7 @@ if(formFields!=null){
       <bpmn:incoming>SequenceFlow_1fz9svo</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0hnjol0</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="SequenceFlow_0hnjol0" sourceRef="ExclusiveGateway_1kl4s3b" targetRef="slanje_mejla_uia" />
+    <bpmn:sequenceFlow id="SequenceFlow_0hnjol0" sourceRef="ExclusiveGateway_1kl4s3b" targetRef="Task_1dnyb0q" />
     <bpmn:sequenceFlow id="SequenceFlow_1fz9svo" sourceRef="ispravka_rada" targetRef="ExclusiveGateway_1kl4s3b" />
     <bpmn:sequenceFlow id="SequenceFlow_0nb0epc" sourceRef="prodnadji_urednika_no" targetRef="ExclusiveGateway_0r526x2" />
     <bpmn:userTask id="izbor_recezenata" name="Izbor recezenata" camunda:assignee="${urednik_no}">
@@ -431,7 +425,7 @@ execution.setVariableLocal("komentarZaAutora","");</camunda:script>
         </bpmn:timerEventDefinition>
       </bpmn:boundaryEvent>
       <bpmn:sequenceFlow id="SequenceFlow_1x1p313" sourceRef="ExclusiveGateway_08mrpbh" targetRef="recezenti_pregledaju" />
-      <bpmn:sendTask id="mejl_urednik_novi_recezent" name="Obavesti urednika o izboru novog recezenta" camunda:expression="wtv">
+      <bpmn:sendTask id="mejl_urednik_novi_recezent" name="Obavesti urednika o izboru novog recezenta" camunda:class="rs.ac.uns.naucnacentrala.camunda.paper.NotifyAuthorAndEditor">
         <bpmn:incoming>SequenceFlow_1tfykcn</bpmn:incoming>
         <bpmn:outgoing>SequenceFlow_07ktgwu</bpmn:outgoing>
       </bpmn:sendTask>
@@ -536,7 +530,7 @@ newSelectedRecezenti.add(recezent);</camunda:script>
     <bpmn:sequenceFlow id="SequenceFlow_0sqyo6q" name="odbijeno" sourceRef="ExclusiveGateway_0ax10zr" targetRef="ExclusiveGateway_1gb9w2e">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${konacnaOdluka=="odbij"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sendTask id="mail_odbijeno_skroz" name="Obavesti korisnika o odbijanju" camunda:expression="wtv">
+    <bpmn:sendTask id="mail_odbijeno_skroz" name="Obavesti korisnika o odbijanju" camunda:class="rs.ac.uns.naucnacentrala.camunda.paper.NotifyAuthorAndEditor">
       <bpmn:incoming>SequenceFlow_1266wwx</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1enq9oj</bpmn:outgoing>
     </bpmn:sendTask>
@@ -568,11 +562,11 @@ newSelectedRecezenti.add(recezent);</camunda:script>
     <bpmn:sequenceFlow id="SequenceFlow_1wopuvo" sourceRef="ExclusiveGateway_0mu582b" targetRef="mail_velike_ispravke">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${konacnaOdluka=="veceIzmene"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sendTask id="mail_velike_ispravke" name="Obavestiti korisnika o velikim ispravkama" camunda:expression="wtv">
+    <bpmn:sendTask id="mail_velike_ispravke" name="Obavestiti korisnika o velikim ispravkama" camunda:class="rs.ac.uns.naucnacentrala.camunda.paper.NotifyAuthorAndEditor">
       <bpmn:incoming>SequenceFlow_1wopuvo</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_08hbhhz</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:sendTask id="mail_male_ispravke" name="Obavestiti korisnika o malim ispravkama" camunda:expression="wtv">
+    <bpmn:sendTask id="mail_male_ispravke" name="Obavestiti korisnika o malim ispravkama" camunda:class="rs.ac.uns.naucnacentrala.camunda.paper.NotifyAuthorAndEditor">
       <bpmn:incoming>SequenceFlow_0ejmgre</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1549nz2</bpmn:outgoing>
     </bpmn:sendTask>
@@ -690,7 +684,7 @@ newSelectedRecezenti.add(recezent);</camunda:script>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_08hbhhz" sourceRef="mail_velike_ispravke" targetRef="vece_izmene" />
     <bpmn:sequenceFlow id="SequenceFlow_0q8n68o" sourceRef="vece_izmene" targetRef="mail_rec_vece_izmene" />
-    <bpmn:sendTask id="mail_rec_vece_izmene" name="Obavesti recezente o izmenama" camunda:expression="wtv">
+    <bpmn:sendTask id="mail_rec_vece_izmene" name="Obavesti recezente o izmenama" camunda:class="rs.ac.uns.naucnacentrala.camunda.paper.NotifyAuthorAndEditor">
       <bpmn:incoming>SequenceFlow_0q8n68o</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_17ahlfk</bpmn:outgoing>
     </bpmn:sendTask>
@@ -725,7 +719,7 @@ execution.setVariable("selectedRecezenti",selectedRecezenti);</bpmn:script>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${konacnaOdlukaPon=="potvrdi"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_0rfnp3u" sourceRef="ExclusiveGateway_1pxbytu" targetRef="mail_potvrda_skroz" />
-    <bpmn:sendTask id="mail_potvrda_skroz" name="Obavesti korisnika o potvrdi" camunda:expression="wtv">
+    <bpmn:sendTask id="mail_potvrda_skroz" name="Obavesti korisnika o potvrdi" camunda:class="rs.ac.uns.naucnacentrala.camunda.paper.NotifyAuthorAndEditor">
       <bpmn:incoming>SequenceFlow_0rfnp3u</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0b6l3up</bpmn:outgoing>
     </bpmn:sendTask>
@@ -745,7 +739,7 @@ execution.setVariable("selectedRecezenti",selectedRecezenti);</bpmn:script>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1h6vy59" sourceRef="IntermediateThrowEvent_1rfkbpy" targetRef="ExclusiveGateway_14l1qxo" />
-    <bpmn:sendTask id="mail_isteklo_vreme" name="Obavesti korisnika o odbijanju zbog isteka vremena" camunda:expression="wtv">
+    <bpmn:sendTask id="mail_isteklo_vreme" name="Obavesti korisnika o odbijanju zbog isteka vremena" camunda:class="rs.ac.uns.naucnacentrala.camunda.paper.NotifyAuthorAndEditor">
       <bpmn:incoming>SequenceFlow_180n7rv</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_04t18f9</bpmn:outgoing>
     </bpmn:sendTask>
@@ -785,17 +779,17 @@ execution.setVariable("selectedRecezenti",selectedRecezenti);</bpmn:script>
       <bpmn:outgoing>SequenceFlow_0r9srh8</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="SequenceFlow_02n4u7g" sourceRef="Task_1rtl2rr" targetRef="konacna_odluka_pon" />
-    <bpmn:sendTask id="Task_1rtl2rr" name="Obavesti urednika o izmenama" camunda:expression="wtv">
+    <bpmn:sendTask id="Task_1rtl2rr" name="Obavesti urednika o izmenama" camunda:class="rs.ac.uns.naucnacentrala.camunda.paper.NotifyAuthorAndEditor">
       <bpmn:incoming>SequenceFlow_1hzp3o4</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_02n4u7g</bpmn:outgoing>
     </bpmn:sendTask>
     <bpmn:sequenceFlow id="SequenceFlow_1ygz2um" sourceRef="Task_0piqyjd" targetRef="dorada_rada" />
-    <bpmn:sendTask id="Task_0piqyjd" name="Obavesti autora o doradi" camunda:expression="wtv">
+    <bpmn:sendTask id="Task_0piqyjd" name="Obavesti autora o doradi" camunda:class="rs.ac.uns.naucnacentrala.camunda.paper.NotifyAuthorAndEditor">
       <bpmn:incoming>SequenceFlow_0fuz5hs</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1ygz2um</bpmn:outgoing>
     </bpmn:sendTask>
     <bpmn:sequenceFlow id="SequenceFlow_01fwt5q" sourceRef="Task_138hcdo" targetRef="final_decision" />
-    <bpmn:sendTask id="Task_138hcdo" name="Obavesti urednika o zavrsetku dorade" camunda:expression="wtv">
+    <bpmn:sendTask id="Task_138hcdo" name="Obavesti urednika o zavrsetku dorade" camunda:class="rs.ac.uns.naucnacentrala.camunda.paper.NotifyAuthorAndEditor">
       <bpmn:incoming>SequenceFlow_1vd85zw</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_01fwt5q</bpmn:outgoing>
     </bpmn:sendTask>
@@ -823,6 +817,21 @@ execution.setVariable("selectedRecezenti",selectedRecezenti);</bpmn:script>
     <bpmn:sequenceFlow id="SequenceFlow_0671nil" sourceRef="ExclusiveGateway_0sot5q2" targetRef="SubProcess_0pwebri" />
     <bpmn:sequenceFlow id="SequenceFlow_12kv9yx" sourceRef="SubProcess_0pwebri" targetRef="ExclusiveGateway_15oiyvc" />
     <bpmn:sequenceFlow id="SequenceFlow_1kzsyb3" sourceRef="ExclusiveGateway_18i9e56" targetRef="get_aau_id" />
+    <bpmn:sequenceFlow id="SequenceFlow_0omnuva" sourceRef="Task_04fkl55" targetRef="urednik_proverava_podatke" />
+    <bpmn:sequenceFlow id="SequenceFlow_1hv4qut" sourceRef="Task_1dnyb0q" targetRef="Task_04fkl55" />
+    <bpmn:sendTask id="Task_1dnyb0q" name="Slanje mejla autoru" camunda:class="rs.ac.uns.naucnacentrala.camunda.paper.NotifyAuthorAndEditor">
+      <bpmn:incoming>SequenceFlow_0hnjol0</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1hv4qut</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sendTask id="Task_04fkl55" name="Slanje mejla uredniku" camunda:class="rs.ac.uns.naucnacentrala.camunda.paper.NotifyAuthorAndEditor">
+      <bpmn:incoming>SequenceFlow_1hv4qut</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0omnuva</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sequenceFlow id="SequenceFlow_06y4y62" sourceRef="Task_1h5w7p7" targetRef="prodnadji_urednika_no" />
+    <bpmn:serviceTask id="Task_1h5w7p7" name="Cuvanje rada u bazi" camunda:class="rs.ac.uns.naucnacentrala.camunda.paper.SavePaperTask">
+      <bpmn:incoming>SequenceFlow_014g0fp</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_06y4y62</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="obradaNaucnogRada">
@@ -928,15 +937,12 @@ execution.setVariable("selectedRecezenti",selectedRecezenti);</bpmn:script>
         <di:waypoint x="1990" y="420" />
         <di:waypoint x="2100" y="420" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="SendTask_0j66148_di" bpmnElement="slanje_mejla_uia">
-        <dc:Bounds x="2470" y="690" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0clm7iy_di" bpmnElement="SequenceFlow_0clm7iy">
-        <di:waypoint x="2520" y="580" />
-        <di:waypoint x="2520" y="615" />
+        <di:waypoint x="2520" y="460" />
+        <di:waypoint x="2520" y="475" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ScriptTask_0cv1qeb_di" bpmnElement="get_aau_id">
-        <dc:Bounds x="2470" y="500" width="100" height="80" />
+        <dc:Bounds x="2470" y="380" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_18i9e56_di" bpmnElement="ExclusiveGateway_18i9e56" isMarkerVisible="true">
         <dc:Bounds x="2305" y="395" width="50" height="50" />
@@ -964,10 +970,6 @@ execution.setVariable("selectedRecezenti",selectedRecezenti);</bpmn:script>
       <bpmndi:BPMNShape id="ServiceTask_1qqdpnq_di" bpmnElement="Task_0tz1m7n">
         <dc:Bounds x="2100" y="380" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_08myowb_di" bpmnElement="SequenceFlow_08myowb">
-        <di:waypoint x="2520" y="770" />
-        <di:waypoint x="2520" y="810" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_1n7prvi_di" bpmnElement="urednik_proverava_podatke">
         <dc:Bounds x="2470" y="810" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -976,7 +978,7 @@ execution.setVariable("selectedRecezenti",selectedRecezenti);</bpmn:script>
         <di:waypoint x="2520" y="935" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ScriptTask_1u4tbs3_di" bpmnElement="prodnadji_urednika_no">
-        <dc:Bounds x="2470" y="1310" width="100" height="80" />
+        <dc:Bounds x="2470" y="1350" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_12ghyo8_di" bpmnElement="ExclusiveGateway_12ghyo8" isMarkerVisible="true">
         <dc:Bounds x="2495" y="935" width="50" height="50" />
@@ -1014,7 +1016,7 @@ execution.setVariable("selectedRecezenti",selectedRecezenti);</bpmn:script>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_014g0fp_di" bpmnElement="SequenceFlow_014g0fp">
         <di:waypoint x="2520" y="1225" />
-        <di:waypoint x="2520" y="1310" />
+        <di:waypoint x="2520" y="1250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1xv0bsp_di" bpmnElement="SequenceFlow_1xv0bsp">
         <di:waypoint x="2545" y="1200" />
@@ -1056,19 +1058,19 @@ execution.setVariable("selectedRecezenti",selectedRecezenti);</bpmn:script>
         <di:waypoint x="3162" y="1320" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_1kl4s3b_di" bpmnElement="ExclusiveGateway_1kl4s3b" isMarkerVisible="true">
-        <dc:Bounds x="2495" y="615" width="50" height="50" />
+        <dc:Bounds x="2495" y="475" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0hnjol0_di" bpmnElement="SequenceFlow_0hnjol0">
-        <di:waypoint x="2520" y="665" />
-        <di:waypoint x="2520" y="690" />
+        <di:waypoint x="2520" y="525" />
+        <di:waypoint x="2520" y="560" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1fz9svo_di" bpmnElement="SequenceFlow_1fz9svo">
         <di:waypoint x="2920" y="1160" />
-        <di:waypoint x="2920" y="640" />
-        <di:waypoint x="2545" y="640" />
+        <di:waypoint x="2920" y="500" />
+        <di:waypoint x="2545" y="500" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0nb0epc_di" bpmnElement="SequenceFlow_0nb0epc">
-        <di:waypoint x="2520" y="1390" />
+        <di:waypoint x="2520" y="1430" />
         <di:waypoint x="2520" y="1455" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_119i16x_di" bpmnElement="izbor_recezenata">
@@ -1469,9 +1471,29 @@ execution.setVariable("selectedRecezenti",selectedRecezenti);</bpmn:script>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1kzsyb3_di" bpmnElement="SequenceFlow_1kzsyb3">
         <di:waypoint x="2355" y="420" />
-        <di:waypoint x="2520" y="420" />
-        <di:waypoint x="2520" y="500" />
+        <di:waypoint x="2470" y="420" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0omnuva_di" bpmnElement="SequenceFlow_0omnuva">
+        <di:waypoint x="2520" y="770" />
+        <di:waypoint x="2520" y="810" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1hv4qut_di" bpmnElement="SequenceFlow_1hv4qut">
+        <di:waypoint x="2520" y="640" />
+        <di:waypoint x="2520" y="690" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="SendTask_07kl39g_di" bpmnElement="Task_1dnyb0q">
+        <dc:Bounds x="2470" y="560" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SendTask_0iguw3t_di" bpmnElement="Task_04fkl55">
+        <dc:Bounds x="2470" y="690" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_06y4y62_di" bpmnElement="SequenceFlow_06y4y62">
+        <di:waypoint x="2520" y="1330" />
+        <di:waypoint x="2520" y="1350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_016r53k_di" bpmnElement="Task_1h5w7p7">
+        <dc:Bounds x="2470" y="1250" width="100" height="80" />
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
